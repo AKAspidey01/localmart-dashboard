@@ -4,8 +4,16 @@ import './Dashboard.scss';
 import SideBar from '../Navigation/SideBar/SideBar';
 import { config } from '../../env-services';
 import axios from 'axios';
+import Lottie from 'lottie-react';
+import EmptyLoader from '../../assets/images/animated-logos/emptyastro.json';
+import EditIcon from '../../assets/images/edit-icon.svg';
+import DeleteIcon from '../../assets/images/delete-icon.svg';
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
+
+
+  const navigate = useNavigate()
 
   const [categoriesData , setCategoriesData] = useState([]);
   const [userToken , setUserToken] = useState('');
@@ -177,6 +185,87 @@ const Dashboard = () => {
             <div className="bottom-last-updated mt-4">
               <p className='text-Black text-sm opacity-50'>Last Updated: <span className='text-Black font-medium'>06/03/2025</span></p>
             </div>
+          </div>
+        </div>
+        <div className="bottom-business-table-section w-full mt-6">
+          <div className="inner-business-table-section bg-white rounded-xl overflow-hidden">
+            <div className="top-business-table-section-header flex items-center justify-between px-6 py-4">
+              <h4 className=' text-xl font-medium'>Businesses</h4>
+              <button type="button" className='text-Secondary font-semibold text-lg' onClick={() => navigate('/business')}>View all</button>
+            </div>
+            <table cellPadding={15} className='w-full'>
+              <thead>
+                <tr className='bg-LightGrayBg'>
+                  <th className='text-left font-normal opacity-50'>Name</th>
+                  <th className='text-left font-normal opacity-50'>Number</th>
+                  <th className='text-left font-normal opacity-50'>UserName</th>
+                  <th className='text-left font-normal opacity-50'>Category</th>
+                  <th className='text-left font-normal opacity-50'>City</th>
+                  {/* <th className='text-left font-normal opacity-50'>Actions</th> */}
+                </tr>
+              </thead>
+                 <tbody>
+                  {businessData && businessData.length > 0 ?  
+                    businessData.map((items , index) => {
+                      return (
+                        <tr className='hover:bg-Secondary hover:bg-opacity-5' key={index}>
+                          <td>
+                            <div className="business-name-sec flex items-center gap-x-4">
+                              <div className="left-bus-image ">
+                                <img src={items?.mediaFiles[0]?.fileUrl} className='w-10 h-10 rounded-full' alt="" />
+                              </div>
+                              <div className="right-business-name">
+                                <p className='text-sm'>{items?.name} </p>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div className="business-number-sec">
+                              <p className='text-sm'>{items?.mobileNumber}4</p>
+                            </div>
+                          </td>
+                          <td>
+                            <div className="business-username-sec">
+                              <p className='text-sm'>{items?.userName}</p>
+                            </div>
+                          </td>
+                          <td>
+                            <div className="business-username-sec">
+                              <p className='text-sm capitalize'>{items?.categoryId?.name}</p>
+                            </div>
+                          </td>
+                          <td>
+                            <div className="business-username-sec">
+                              <p className='text-sm'>{items?.cityId?.name}</p>
+                            </div>
+                          </td>
+                          {/* <td>
+                            <div className="edit-delete-buttons flex items-center gap-x-5">
+                              <div className="edit-btn">
+                                <button type="button" className=''><img src={EditIcon} className='w-5 h-5' alt="" /></button>
+                              </div>
+                              <div className="delete-btn">
+                                <button type="button" className=''><img src={DeleteIcon} className='w-5 h-5' alt="" /></button>
+                              </div>
+                            </div>
+                          </td> */}
+                        </tr>
+                      )
+                    }) : 
+                      <tr>
+                        <td colSpan={6}>
+                          <div className="nodata-found-section flex justify-center flex-col items-center py-5">
+                            <Lottie animationData={EmptyLoader} style={{ width: 300}}/>
+                            <div className="no-data-found-text-btn mt-5">
+                              <p className='text-center'>No Data Found</p>
+                              <button type="button" onClick={() => navigate('/business/add-business')} className="text-Secondary font-semibold text-xl mt-5">Add Business</button>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    } 
+                 </tbody>
+            </table>
           </div>
         </div>
       </div>

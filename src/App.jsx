@@ -16,6 +16,7 @@ import Categories from './Components/Categories/Categories'
 import AddCategory from './Components/Categories/AddCategory'
 import Advertisements from './Components/Advertisements/Advertisements'
 import AddAdvertisement from './Components/Advertisements/AddAdvertisement'
+import Profile from './Components/Profile/Profile'
 
 
 const Layout = () => {
@@ -33,6 +34,7 @@ const Layout = () => {
             <Route exact={true} Component={AddUser} path='/users/add-user'/>
             <Route exact={true} Component={Advertisements} path='/advertisements'/>
             <Route exact={true} Component={AddAdvertisement} path='/advertisements/add-advertisements'/>
+            <Route exact={true} Component={Profile} path='/profile'/>
           </Route>
           <Route exact={true} Component={Login} path='/login' />
         </Routes> 
