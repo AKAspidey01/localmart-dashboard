@@ -1,0 +1,30 @@
+.Businesses {
+    .inner-business-table-section {
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            tr {
+                border-bottom: 1px solid #e4e4e4;
+                padding: 0px 20px !important;
+            }
+            tbody {
+                tr:last-child {
+                    border-bottom: none !important;
+                }
+            }
+            // tr:last-child {
+            //     border-bottom: none !important;
+            // }
+        }
+    }
+}
+
+.email-input-icon , .left-map-icon{
+    transform: translate(-0% , -50%);
+}
+.file-upload-outer-section-custom {
+    .inner-file-upload-butifier {
+        transform: translate(-50% , -50%);
+    }
+}

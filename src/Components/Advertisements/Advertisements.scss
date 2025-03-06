@@ -1,0 +1,12 @@
+.Advertisements {
+    table {
+        .advertisement-link-section {
+            a {
+                width: 120px; /* Adjust width as needed */
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        }
+    }
+}

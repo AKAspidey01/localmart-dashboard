@@ -1,0 +1,14 @@
+.SideBar {
+    .main-side-bar-nav {
+        ul {
+            a {
+                background: #fff;
+                transition-duration: 0.5s;
+            }
+            a.active {
+                background: #1F90FF !important;
+                color: #fff !important;
+            }
+        }
+    }
+}
