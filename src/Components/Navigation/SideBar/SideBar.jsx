@@ -25,6 +25,7 @@ const SideBar = () => {
               <li><NavLink className={`text-Black text-lg py-3 px-5 w-full flex items-center gap-3`} to={'/users'}><i className="ri-group-fill"></i> <p>Users</p></NavLink></li>
               <li><NavLink className={`text-Black text-lg py-3 px-5 w-full flex items-center gap-3`} to={'/categories'}><i className="bi bi-tags-fill"></i> <p>Categories</p></NavLink></li>
               <li><NavLink className={`text-Black text-lg py-3 px-5 w-full flex items-center gap-3`} to={'/advertisements'}><i className="bi bi-cast"></i> <p>Adds</p></NavLink></li>
+              <li><NavLink className={`text-Black text-lg py-3 px-5 w-full flex items-center gap-3`} to={'/cities'}><i className="bi bi-crosshair"></i> <p>Cities</p></NavLink></li>
               <li><NavLink className={`text-Black text-lg py-3 px-5 w-full flex items-center gap-3`} to={'/profile'}><i className="bi bi-person-circle"></i> <p>Profile</p></NavLink></li>
             </ul>
           </nav>

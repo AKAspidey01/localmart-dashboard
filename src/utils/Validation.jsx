@@ -58,3 +58,9 @@ export const addAdvertValidation = yup.object().shape({
     subject: yup.string().required('Please Enter Subject'),
     message: yup.string().required('Please Enter Message'),
 })
+
+
+export const addCitiesValidation = yup.object().shape({
+    state: yup.string().required('Please Enter State'),
+    city: yup.string().required('Please Enter City'),
+})

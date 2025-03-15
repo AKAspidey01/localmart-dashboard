@@ -168,7 +168,7 @@ const AddCategory = () => {
                 <div className="backarrow-sec w-8 h-8 rounded-full bg-white flex items-center justify-center">
                     <i className="ri-arrow-left-line text-xl"></i>
                 </div>
-                <h4 className='font-medium '>Back to businesses</h4>
+                <h4 className='font-medium '>Back to Categories</h4>
             </button>
             <div className="single-form-section-business business-basic-details  rounded-[15px] bg-white">
               <div className="basic-details-heading py-[15px] px-6 border-b border-black border-opacity-20">
@@ -253,7 +253,7 @@ const AddCategory = () => {
                 </div>
                 
                 <div className="bottom-form-submitter col-span-12  overflow-hidden relative group ">
-                    <button type='button' onClick={handleAddCategory}  disabled={!categoryPic && !categoryName} className='w-full py-5 px-4 rounded-xl text-white font-semibold text-xl h-full bg-Primary disabled:bg-opacity-35 '>Add Category</button>
+                    <button type='button' onClick={handleAddCategory} disabled={!categoryPic || !categoryName}  className='w-full py-5 px-4 rounded-xl text-white font-semibold text-xl h-full bg-Primary disabled:bg-opacity-35 '>Add Category</button>
                 </div>
               </div>
             </div>
