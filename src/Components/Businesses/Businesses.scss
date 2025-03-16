@@ -20,6 +20,22 @@
     }
 }
 
+.social-media-adding-button  {
+    transform: translate(-0% , -50%);
+    &:active {
+        transform: translate(-0% , -50%) scale(1) !important;
+    }
+}
+
+.similar-business-media-slide-btns {
+    transform: translate(-0% , -50%) scale(1) !important;
+}
+
+
+.similar-business-media-slide-btns:active {
+    transform: translate(-0% , -50%) scale(1) !important;
+}
+
 .email-input-icon , .left-map-icon{
     transform: translate(-0% , -50%);
 }

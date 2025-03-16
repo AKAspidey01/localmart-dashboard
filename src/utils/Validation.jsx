@@ -24,7 +24,7 @@ export const businessFormAddValidation = yup.object().shape({
     businessTitle: yup.string().notRequired(),
     mobileNumber: yup.number().required('Please Enter Your Mobile Number').min(10 , "Minimum 10 Digits"),
     email: yup.string().email('Please Enter Valid Email').required('Email Address Required'),
-    socialMedia: yup.string().notRequired(),
+    socialMedia: yup.string().url().notRequired(),
     completeAddress: yup.string().required('Please Enter Complete Address'),
     landmark: yup.string().notRequired(),    
     pincode: yup.string().required('Please Enter Pincode'),

@@ -19,6 +19,7 @@ import AddAdvertisement from './Components/Advertisements/AddAdvertisement'
 import Profile from './Components/Profile/Profile'
 import Cities from './Components/Cities/Cities'
 import AddCities from './Components/Cities/AddCities'
+import BusinessDetails from './Components/Businesses/BusinessDetails'
 
 
 const Layout = () => {
@@ -30,6 +31,7 @@ const Layout = () => {
             <Route exact={true} Component={Businesses} path='/business' />
             <Route exact={true} Component={AddBusiness} path='/business/add-business'/>
             <Route exact={true} Component={AddBusinessMedia} path='/business/add-photos'/>
+            <Route exact={true} Component={BusinessDetails} path='/business/details'/>
             <Route exact={true} Component={Categories} path='/categories'/>
             <Route exact={true} Component={AddCategory} path='/categories/add-category'/>
             <Route exact={true} Component={Users} path='/users'/>
@@ -42,7 +44,7 @@ const Layout = () => {
           </Route>
           <Route exact={true} Component={Login} path='/login' />
         </Routes> 
-        <div className="left-side-bar-section fixed left-0 top-0 w-full max-w-[240px] h-full">
+        <div className="left-side-bar-section fixed left-0 top-0 w-full max-w-[240px] z-[99999] h-full border-r border-BorderColor border-opacity-50">
           <SideMenuWrapper/>
         </div>
     </AuthProvider>

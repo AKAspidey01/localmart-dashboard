@@ -52,6 +52,11 @@ const AddBusiness = () => {
   const [userToken, setUserToken] = useState("");
   const [allUsers, setAllUsers] = useState([]);
 
+  const [socialMediaInput, setSocialMediaInput] = useState("");
+  const [socialMediaLinks, setSocialMediaLinks] = useState([]);
+
+
+
   useEffect(() => {
     getAllCategories();
     getAllAmenities();
@@ -81,6 +86,32 @@ const AddBusiness = () => {
       paddingLeft: 40,
     },
   };
+
+  const isValidURL = (url) => {
+    const urlPattern = /^(https?:\/\/)?([\w\d-]+\.)+\w{2,}(\/[\w\d-./?%&=]*)?$/;
+      return urlPattern.test(url);
+  };
+
+  const addSocialMediaLink = () => {
+      if (!socialMediaInput.trim()) {
+          alert("Please enter a URL");
+          return;
+      }
+
+      if (!isValidURL(socialMediaInput)) {
+          alert("Please enter a valid URL");
+          return;
+      }
+
+      setSocialMediaLinks([...socialMediaLinks, socialMediaInput]);
+      setSocialMediaInput(""); 
+      setError(""); 
+  };
+
+  const removeSocialMediaLink = (index) => {
+      setSocialMediaLinks(socialMediaLinks.filter((_, i) => i !== index));
+  };
+
 
   const getAllUsers = async (token) => {
     await axios
@@ -318,7 +349,9 @@ const AddBusiness = () => {
     formData.append("title", data.businessTitle);
     formData.append("mobileNumber", data.mobileNumber);
     formData.append("email", data.email);
-    formData.append("socialMediaLink", data.socialMedia);
+    socialMediaLinks.forEach((items) => {
+      formData.append('socialMediaLink' , items);
+    })
     formData.append("categoryId", data.businessCategory);
     formData.append("yearlyTurnOver", data.yearlyTurnOver);
     formData.append("noOfEmployees", data.noOfEmployees);
@@ -564,17 +597,30 @@ const AddBusiness = () => {
                               </div>
                               <div className="form-inputsec relative col-span-12">
                                 <div className="label-section mb-1">
-                                  <p className="text-BusinessFormLabel">
-                                    Social Media Links(optional)
-                                  </p>
+                                  <p className='text-BusinessFormLabel'>Social Media Links(optional)</p>
                                 </div>
-                                <Field
-                                  type="text"
-                                  name="socialMedia"
-                                  placeholder="Enter Social Media Link"
-                                  className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black border-LoginFormBorder placeholder:text-Black`}
-                                />
+                                <div className="social-media-adding-section relative">
+                                  <Field type="text" name="socialMedia" placeholder='Enter Social Media Link' onKeyUp={(e) => setSocialMediaInput(e.target.value)} 
+                                      className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black ${errors.socialMedia  ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                                  />
+                                  <button type="button" onClick={addSocialMediaLink}  className='absolute social-media-adding-button top-1/2 right-1 py-2 px-8 rounded-lg bg-white text-Secondary'>Add Link</button>
+                                </div>                                      
                               </div>
+                              {socialMediaLinks.map((items , index) => {
+                                return (
+                                  <div className="social-meida-links-displayer col-span-12">
+                                    <div className="left-side-link-icon flex items-center justify-between bg-LightGrayBg rounded-[5px] py-2 px-4">
+                                        <div className="text-link-icon-outer flex items-center gap-4">
+                                          <i className="ri-link text-lg text-Secondary"></i>
+                                          <div className="right-text">
+                                              <p className='text-Secondary font-medium'>{items}</p>
+                                          </div>
+                                        </div>
+                                        <div className="remove-link-btn"><button type="button" onClick={() => removeSocialMediaLink(index)} className='w-6 h-6 rounded-full flex items-center justify-center bg-red-100'><i className="ri-close-large-line text-red-600"></i></button></div>
+                                    </div>
+                                  </div>
+                                )
+                              })}
                             </div>
                           </div>
                           <div className="single-form-section-business business-basic-details rounded-[15px] bg-white">

@@ -42,7 +42,7 @@ const SideBar = () => {
           <button  onClick={() => {logout() , navigate('/login')}} type="button" className='text-red-400 font-medium text-lg w-full py-3 px-5 text-left'>Log Out</button>
         </div>
       </div> */}
-      <div className="inner-side-bar-section relative h-full">
+      <div className="inner-side-bar-section relative h-full ">
         <div className="top-logo-section-sidebar px-5">
           <img src={Logo} className="w-full max-w-32" alt="Logo" />
         </div>

@@ -116,14 +116,14 @@ const Businesses = () => {
                   <th className='text-left font-normal opacity-50'>UserName</th>
                   <th className='text-left font-normal opacity-50'>Category</th>
                   <th className='text-left font-normal opacity-50'>City</th>
-                  <th className='text-left font-normal opacity-50'>Actions</th>
+                  <th className='text-left font-normal opacity-50'>Status</th>
                 </tr>
               </thead>
                  <tbody>
                   {businessData && businessData.length > 0 ?  
                     businessData.map((items , index) => {
                       return (
-                        <tr className='hover:bg-Secondary hover:bg-opacity-5' key={index}>
+                        <tr className='hover:bg-Secondary hover:bg-opacity-5 cursor-pointer' key={index} onClick={() => navigate(`/business/details`, { state: { items }})}>
                           <td>
                             <div className="business-name-sec flex items-center gap-x-4">
                               <div className="left-bus-image ">
@@ -156,12 +156,13 @@ const Businesses = () => {
                           </td>
                           <td>
                             <div className="edit-delete-buttons flex items-center gap-x-5">
-                              <div className="edit-btn">
+                              {/* <div className="edit-btn">
                                 <button type="button" className=''><img src={EditIcon} className='w-5 h-5' alt="" /></button>
                               </div>
                               <div className="delete-btn">
                                 <button type="button" className=''><img src={DeleteIcon} className='w-5 h-5' alt="" /></button>
-                              </div>
+                              </div> */}
+                              <p className={`text-sm font-medium ${items?.status == 'in_review' ? 'text-orange-500' : 'text-green-500'}`}>{items?.status == "in_review" ? 'In-Review' : 'Published'}</p>
                             </div>
                           </td>
                         </tr>
