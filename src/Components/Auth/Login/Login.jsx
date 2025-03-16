@@ -52,7 +52,7 @@ const Login = () => {
     }
     setModalIsOpen(true)
     try {
-      await axios.post(`${config.api}auth/authenticate` , obj)
+      await axios.post(`${config.api}auth/admin/authenticate` , obj)
       .then((response) => {
         console.log(response , 'userreg-res');
         if(response?.data?.data?.token) {
@@ -62,7 +62,7 @@ const Login = () => {
             const token = response?.data?.data?.token
             localStorage.setItem("adminToken", JSON.stringify(token));
             login(token)
-            navigate('/business')
+            navigate('/')
         }else {
           setModalIsOpen(false)
           toast.error('Invalid Credentials');

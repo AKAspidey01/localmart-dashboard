@@ -2,14 +2,18 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import './Profile.scss';
 import ProfileDummyImg from '../../assets/images/profile-dummy-image.svg';
+import { useAuth } from '../../utils/AuthContext';
 
 
 const Profile = () => {
 
   const [passwordHandle , setPasswordHandle] = useState(false);  
+  const {userData} = useAuth();
+
+  // console.log(userData)
 
   return (
-    <div className="Profile bg-DashboardGray w-full h-screen">
+    <div className="Profile bg-DashboardGray w-full h-full min-h-screen">
       <div className="inner-profile-main-section pl-[270px] py-8 pr-8">
           <div className="top-business-heading">
             <h2 className='text-3xl font-semibold'>Porfile Information</h2>
@@ -22,16 +26,16 @@ const Profile = () => {
                       <img src={ ProfileDummyImg} className='rounded-full w-[60px] h-[60px]' alt="" />
                     </div>
                     <div className="profile-details-prof">
-                      <h6 className='text-Black font-medium text-xl'>Admin Local Mart</h6>
-                      <p className='text-LightText'>admin@localmart.com</p>
+                      <h6 className='text-Black font-medium text-xl capitalize'>{userData?.firstName}</h6>
+                      <p className='text-LightText'>{userData?.email}</p>
                     </div>
                   </div>
                   <div className="right-side-profile-role-badge">
-                    <p className='px-6 py-2 rounded-lg text-lg bg-green-600 bg-opacity-10 text-green-500'>Super Amdin</p>
+                    <p className={`px-6 py-2 rounded-lg text-lg  bg-opacity-10 ${userData?.role?.slug == 'reviewer' ? 'bg-orange-600 text-orange-600' : userData?.role?.slug == 'technician' ? 'text-Secondary bg-Secondary' : 'text-green-600 bg-green-600'}`}>{userData?.role?.name}</p>
                   </div>
               </div>
               <div className="change-password-section">
-                <div className="change-password-head-sec bg-LightBlue w-full py-4 px-5">
+                <div className="change-password-head-sec bg-LightBlue w-full py-2 px-5">
                   <p className='text-lg font-medium text-Black'>Credentials</p>
                 </div>
                 <div className="inner-credentials-section p-6">
@@ -40,7 +44,7 @@ const Profile = () => {
                           <div className="label-section mb-1">
                               <p className='text-BusinessFormLabel'>Email*</p>
                           </div>
-                          <input type="text" name="firstName" placeholder='Enter First Name' disabled={true} value={'admin@localmart.com'}
+                          <input type="text" name="firstName" placeholder='Enter First Name' disabled={true} value={userData?.email}
                               className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black disabled:bg-LightGrayBg`} 
                           />                                
                       </div>

@@ -191,7 +191,7 @@ const Dashboard = () => {
           <div className="inner-business-table-section bg-white rounded-xl overflow-hidden">
             <div className="top-business-table-section-header flex items-center justify-between px-6 py-4">
               <h4 className=' text-xl font-medium'>Businesses</h4>
-              <button type="button" className='text-Secondary font-semibold text-lg' onClick={() => navigate('/business')}>View all</button>
+              {/* <button type="button" className='text-Secondary font-semibold text-lg' onClick={() => navigate('/business')}>View all</button> */}
             </div>
             <table cellPadding={15} className='w-full'>
               <thead>
