@@ -9,7 +9,7 @@ const ProtectedRoutes = () => {
     const rolePermissions = {
         admin: ['/', '/business',  '/business/details' , '/business/add-business', '/business/add-photos', '/categories', '/categories/add-category', '/users', '/users/add-user', '/advertisements', '/advertisements/add-advertisements', '/cities', '/cities/add-cities', '/profile'],
         technician: ['/' ,'/categories', '/advertisements', '/cities', '/profile'],
-        reviewer: ['/' ,'/business', '/profile']
+        reviewer: ['/' ,'/business',  '/business/details' , '/profile']
     };
 
     const { authToken , userRole } = useAuth();
