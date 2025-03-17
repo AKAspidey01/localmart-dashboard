@@ -102,7 +102,7 @@ const AddUser = () => {
     }
 
   return (
-    <div className='AddUser bg-DashboardGray w-full h-screen'>
+    <div className='AddUser bg-DashboardGray w-full h-full min-h-screen '>
         <Modal
             isOpen={modalIsOpen}
             style={customStyles}

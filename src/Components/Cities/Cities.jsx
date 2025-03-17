@@ -91,7 +91,7 @@ const deleteCity = async (id) => {
             </div>
           </div>
       </Modal>
-      <div className="Businesses main-business-section bg-DashboardGray w-full  h-full min-h-screen">
+      <div className="Businesses main-business-section bg-DashboardGray w-full h-full min-h-screen">
         <div className="inner-business-section pl-[270px] py-8 pr-8">
           <div className="top-business-heading flex items-center justify-between gap-x-10">
             <h2 className='text-3xl font-semibold'>Cities Overview</h2>

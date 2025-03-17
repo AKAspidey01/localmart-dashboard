@@ -17,11 +17,21 @@ const Categories = () => {
 
   const [categoriesData , setCategoriesData] = useState([]);
   const [modalIsOpen ,  setModalIsOpen] = useState(false);
-  const [modalData , setModalData] = useState('')
+  const [modalData , setModalData] = useState('');
+  const [userToken , setUserToken] = useState('')
 
   useEffect(() => {
-    getAllCategories()
-  }, [])
+      getUserDetails()
+      getAllCategories()
+  } , [])
+
+    const getUserDetails = async () => {
+      const response = localStorage.getItem("adminToken");
+      if (!response) return;
+    
+      const userParse = JSON.parse(response);
+      setUserToken(userParse);
+    };
 
 
   const customStyles = {
@@ -48,7 +58,11 @@ const Categories = () => {
 
 
   const deleteCategory = async (id) => {
-    await axios.delete(`${config.api}business-category/${id}`)
+    await axios.delete(`${config.api}business-category/${id}`,{
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      },
+    })
     .then((response) => {
       if(response?.data?.success == true) {
         // console.log(response)
@@ -59,7 +73,7 @@ const Categories = () => {
     }).catch((err) => {
       console.log(err);
       setModalIsOpen(false)
-      toast.success('Error in Deleting Business');
+      toast.error('Error in Deleting Business');
     })
 }
 
@@ -92,7 +106,7 @@ const Categories = () => {
             </div>
           </div>
       </Modal>
-      <div className="Users bg-DashboardGray w-full h-screen">
+      <div className="Users bg-DashboardGray w-full h-full min-h-screen">
         <div className="inner-business-section pl-[270px] py-8 pr-8">
           <div className="top-business-heading flex items-center justify-between gap-x-10">
             <h2 className='text-3xl font-semibold'>Categories</h2>

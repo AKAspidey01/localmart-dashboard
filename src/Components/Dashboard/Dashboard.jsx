@@ -127,7 +127,7 @@ const Dashboard = () => {
 
 
   return (
-    <div className="Dashboard main-dashbaord-comp bg-DashboardGray w-full h-screen">
+    <div className="Dashboard main-dashbaord-comp bg-DashboardGray w-full h-full min-h-screen">
       <div className="inner-dashboard-section  pl-[270px] py-8 pr-8">
         <div className="top-single-dashboard-blocks-section grid grid-cols-4 gap-4">
           <div className="inner-single-dashboard-block bg-white rounded-lg p-5">

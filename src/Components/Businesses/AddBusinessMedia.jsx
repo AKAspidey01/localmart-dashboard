@@ -169,7 +169,7 @@ const AddBusinessMedis = () => {
 
 
   return (
-    <div className='AddBusiness w-full h-screen'>
+    <div className='AddBusiness w-full h-full min-h-screen'>
         <div className='business-media-upload bg-LightBlue bg-opacity-80 BusinessFormAdding h-full'>
             <Modal
                 isOpen={modalIsOpen}

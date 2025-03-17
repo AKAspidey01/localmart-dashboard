@@ -44,7 +44,7 @@ const Layout = () => {
           </Route>
           <Route exact={true} Component={Login} path='/login' />
         </Routes> 
-        <div className="left-side-bar-section fixed left-0 top-0 w-full max-w-[240px] z-[99999] h-full border-r border-BorderColor border-opacity-50">
+        <div className="left-side-bar-section fixed left-0 top-0 w-full max-w-[240px] z-[99999] h-full ">
           <SideMenuWrapper/>
         </div>
     </AuthProvider>

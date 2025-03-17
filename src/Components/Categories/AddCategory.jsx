@@ -126,7 +126,11 @@ const AddCategory = () => {
 
     // console.log(formData , "lkjgklsdg")
     try {
-      await axios.post(`${config.api}business-category` , formData)
+      await axios.post(`${config.api}business-category` , formData , {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      })
       .then((response) => {
         if(response?.data?.success == true) {
             setModalIsOpen(false)
@@ -155,7 +159,7 @@ const AddCategory = () => {
 
   return (
     <div className='AddCategory'>
-      <div className='AddUser bg-DashboardGray w-full h-screen'>
+      <div className='AddUser bg-DashboardGray w-full h-full min-h-screen'>
         <Modal
             isOpen={modalIsOpen}
             style={customStyles}

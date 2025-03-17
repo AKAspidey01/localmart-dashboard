@@ -20,7 +20,7 @@ const SideBar = () => {
   };
 
   return (
-    <div className="SideBar h-full bg-white py-8 w-full">
+    <div className="SideBar h-full bg-white py-8 w-full border-r border-BorderColor border-opacity-50">
       {/* <div className="inner-side-bar-section relative h-full">
         <div className="top-logo-section-sidebar px-5">
           <img src={Logo} className='w-full max-w-32' alt="" />
