@@ -17,11 +17,26 @@ const Cities = () => {
 
     const [allCities , setAllCities] = useState([]);
     const [modalIsOpen ,  setModalIsOpen] = useState(false);
-    const [modalData , setModalData] = useState('')
-  
+    const [modalData , setModalData] = useState('');
+    const [userToken , setUserToken] = useState('');
+    
+    
+    
+     
     useEffect(() => {
       getAllCities()
+      getUserDetails()
     }, [])
+
+
+    const getUserDetails = async () => {
+      const response = localStorage.getItem("adminToken");
+      if (!response) return;
+    
+      const userParse = JSON.parse(response);
+      setUserToken(userParse);
+    };
+
 
 
     
@@ -51,7 +66,11 @@ const Cities = () => {
 
 
 const deleteCity = async (id) => {
-  await axios.delete(`${config.api}admin/cities/${id}`)
+  await axios.delete(`${config.api}admin/cities/${id}`, {
+    headers: {
+      Authorization: `Bearer ${userToken}`,
+    },
+  })
   .then((response) => {
     if(response?.data?.success == true) {
       // console.log(response)
