@@ -17,13 +17,24 @@ const AddCities = () => {
 
     
     const [modalIsOpen ,  setModalIsOpen] = useState(false);
-    const [allStates , setAllStates] = useState([])
+    const [allStates , setAllStates] = useState([]);
+      const [userToken , setUserToken] = useState('');
 
 
 
     useEffect(() => {
         getStates()
+        getUserDetails()
     }, [])
+
+    const getUserDetails = async () => {
+      const response = localStorage.getItem("adminToken");
+      if (!response) return;
+    
+      const userParse = JSON.parse(response);
+      setUserToken(userParse);
+    };
+    
 
     const addCityValues = {
         state: '',
@@ -72,7 +83,11 @@ const AddCities = () => {
         setModalIsOpen(true)
 
         try {
-            await axios.post(`${config.api}admin/cities` , formData)
+            await axios.post(`${config.api}admin/cities` , formData  , {
+              headers: {
+                Authorization: `Bearer ${userToken}`,
+              },
+            })
             .then((response) => {
               if(response?.data?.success == true) {
                   setModalIsOpen(false)

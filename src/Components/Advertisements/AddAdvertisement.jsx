@@ -18,6 +18,20 @@ const AddAdvertisement = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [advertImage , setAdvertImage] = useState();
   const [advertImgPrev , setAdvertImgPrev] = useState();
+  const [userToken , setUserToken] = useState('');
+
+
+  useEffect(() => {
+    getUserDetails()
+} , [])
+
+  const getUserDetails = async () => {
+    const response = localStorage.getItem("adminToken");
+    if (!response) return;
+  
+    const userParse = JSON.parse(response);
+    setUserToken(userParse);
+  };
 
 
 
@@ -115,7 +129,7 @@ const AddAdvertisement = () => {
     try {
       await axios.post(`${config.api}admin/advertisements`, formData, {
         headers: {
-        //   Authorization: `Bearer ${userToken}`, 
+          Authorization: `Bearer ${userToken}`, 
         },
       }).then((response) => {
         console.log(response)
