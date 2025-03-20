@@ -22,6 +22,7 @@ const Businesses = () => {
   const [businessData , setBusinessData] = useState([]);
   const [searchValue ,  setSearchValue] = useState('')
   const [totalBusinessData , setTotalBusinessData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
 
 
   useEffect(() => {
@@ -84,8 +85,16 @@ const Businesses = () => {
     //     setTotalBusinessData(filteredData);
     //   }
     // };
+
+    
+    const fileredBusiness = businessData.filter(item =>
+      [item.name, item.userName, item.mobileNumber]
+        .some(field => field?.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+
+
   return (
-    <div className="Businesses main-business-section bg-DashboardGray w-full h-screen">
+    <div className="Businesses main-business-section bg-DashboardGray w-full h-full min-h-screen">
       <div className="inner-business-section pl-[270px] py-8 pr-8">
         <div className="top-business-heading flex items-center justify-between gap-x-10">
           <h2 className='text-3xl font-semibold'>Businesses</h2>
@@ -98,7 +107,7 @@ const Businesses = () => {
         </div>
         <div className="middle-search-section mt-10 mb-3  ">
            <div className="form-inputsec relative w-[30%] ml-auto">
-                <input type="text" placeholder='Search' onKeyUp={(e) => handlerSearch(e.target.value)}
+                <input type="text" placeholder='Search' value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
                     className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 py-3 pl-12 pr-5 rounded-xl bg-white w-full text-Black `} 
                 />                                
                 <div className="email-input-icon pr-4 absolute left-4 top-1/2 w-[50px] ">
@@ -120,8 +129,8 @@ const Businesses = () => {
                 </tr>
               </thead>
                  <tbody>
-                  {businessData && businessData.length > 0 ?  
-                    businessData.map((items , index) => {
+                  {businessData && fileredBusiness.length > 0 ?  
+                    fileredBusiness.map((items , index) => {
                       return (
                         <tr className='hover:bg-Secondary hover:bg-opacity-5 cursor-pointer' key={index} onClick={() => navigate(`/business/details`, { state: { items }})}>
                           <td>

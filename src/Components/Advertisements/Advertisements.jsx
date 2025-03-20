@@ -16,6 +16,8 @@ const Advertisements = () => {
 
   const [allAdverts , setAllAdverts] = useState([]);
   const [userToken , setUserToken] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+
 
 
   useEffect(() => {
@@ -60,6 +62,14 @@ const Advertisements = () => {
     }
 
 
+    const filteredAdds = allAdverts.filter(item =>
+      [item?.name, item?.firstName, item?.lastName , item?.email , item?.mobileNumber , item?.advertisementTitle]
+        .some(field => field?.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+
+
+
+
 
   return (
     <div className="Advertisements">
@@ -76,7 +86,7 @@ const Advertisements = () => {
           </div>
           <div className="middle-search-section mt-10 mb-3  ">
            <div className="form-inputsec relative w-[30%] ml-auto">
-                <input type="text" placeholder='Search'
+                <input type="text" placeholder='Search' value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
                     className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 py-3 pl-12 pr-5 rounded-xl bg-white w-full text-Black `} 
                 />                                
                 <div className="email-input-icon pr-4 absolute left-4 top-1/2 w-[50px] ">
@@ -98,8 +108,8 @@ const Advertisements = () => {
                 </tr>
               </thead>
                  <tbody>
-                  {allAdverts && allAdverts.length > 0 ?  
-                    allAdverts.map((items , index) => {
+                  {allAdverts && filteredAdds.length > 0 ?  
+                    filteredAdds.map((items , index) => {
                       return (
                         <tr className='hover:bg-Secondary hover:bg-opacity-5' key={index}>
                           <td>

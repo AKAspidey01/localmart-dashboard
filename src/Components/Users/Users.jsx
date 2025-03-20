@@ -16,6 +16,8 @@ const Users = () => {
 
   const [userToken , setUserToken] = useState('');
   const [allUsers , setAllUsers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  
 
 
   useEffect(() => {
@@ -59,6 +61,14 @@ const Users = () => {
       }
     }
 
+
+    const filteredUsers = allUsers.filter(item =>
+      [item?.name, item?.firstName, item?.lastName , item?.email , item?.mobileNumber]
+        .some(field => field?.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+
+
+
   return (
     <div className="Users bg-DashboardGray w-full h-full min-h-screen">
       <div className="inner-business-section pl-[270px] py-8 pr-8">
@@ -73,7 +83,7 @@ const Users = () => {
         </div>
         <div className="middle-search-section mt-10 mb-3  ">
            <div className="form-inputsec relative w-[30%] ml-auto">
-                <input type="text" placeholder='Search'
+                <input type="text" placeholder='Search' value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
                     className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 py-3 pl-12 pr-5 rounded-xl bg-white w-full text-Black `} 
                 />                                
                 <div className="email-input-icon pr-4 absolute left-4 top-1/2 w-[50px] ">
@@ -95,8 +105,8 @@ const Users = () => {
                 </tr>
               </thead>
                  <tbody>
-                  {allUsers && allUsers.length > 0 ?  
-                    allUsers.map((items , index) => {
+                  {allUsers && filteredUsers.length > 0 ?  
+                    filteredUsers.map((items , index) => {
                       return (
                         <tr className='hover:bg-Secondary hover:bg-opacity-5' key={index}>
                           <td>

@@ -19,7 +19,7 @@ const Cities = () => {
     const [modalIsOpen ,  setModalIsOpen] = useState(false);
     const [modalData , setModalData] = useState('');
     const [userToken , setUserToken] = useState('');
-    
+      const [searchTerm, setSearchTerm] = useState('');
     
     
      
@@ -85,6 +85,14 @@ const deleteCity = async (id) => {
   })
 }
 
+
+
+
+const filteredCities = allCities.filter(item =>
+  item.name.toLowerCase().includes(searchTerm.toLowerCase())
+);
+
+
   return (
     <div className="Cities">
       <Modal
@@ -123,7 +131,7 @@ const deleteCity = async (id) => {
           </div>
           <div className="middle-search-section mt-10 mb-3  ">
            <div className="form-inputsec relative w-[30%] ml-auto">
-                <input type="text" placeholder='Search'
+                <input type="text" placeholder='Search' value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
                     className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 py-3 pl-12 pr-5 rounded-xl bg-white w-full text-Black `} 
                 />                                
                 <div className="email-input-icon pr-4 absolute left-4 top-1/2 w-[50px] ">
@@ -133,8 +141,8 @@ const deleteCity = async (id) => {
         </div>
         <div className="bottom-business-table-section mt-6">
             <div className="inner-business-table-section grid grid-cols-4 gap-5">
-              {allCities && allCities.length > 0 ? 
-                allCities.map((items , index) => {
+              {allCities && filteredCities.length > 0 ? 
+                filteredCities.map((items , index) => {
                   return (
                     <div className="single-category-item bg-white rounded-10p p-[15px] relative" key={index}>
                         <div className="inner-single-category-item flex items-center gap-5">
