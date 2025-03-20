@@ -19,13 +19,13 @@ export const addUserValidation = yup.object().shape({
 
 export const businessFormAddValidation = yup.object().shape({
     userId:  yup.string().required('Please Select User ID'),
-    userName: yup.string().required('Enter User Name'),
+    userName: yup.string().notRequired(''),
     businessName: yup.string().required('Please enter business name'),
     businessTitle: yup.string().notRequired(),
     mobileNumber: yup.number().notRequired(),
     email: yup.string().email('Please Enter Valid Email').notRequired(''),
     socialMedia: yup.string().url().notRequired(),
-    completeAddress: yup.string().required('Enter complete address'),
+    completeAddress: yup.string().notRequired(''),
     landmark: yup.string().notRequired(),    
     pincode: yup.string().notRequired(''),
     yearlyTurnOver: yup.string().notRequired(''),
