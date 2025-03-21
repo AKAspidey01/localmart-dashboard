@@ -10,7 +10,7 @@ import axios from 'axios';
 import { config } from '../../env-services';
 import Lottie from 'lottie-react';
 import EmptyLoader from '../../assets/images/animated-logos/emptyastro.json'
-
+import DummyBusinessImage from '../../assets/images/dummy-business-image.png'
 
 
 
@@ -136,7 +136,7 @@ const Businesses = () => {
                           <td>
                             <div className="business-name-sec flex items-center gap-x-4">
                               <div className="left-bus-image ">
-                                <img src={items?.mediaFiles[0]?.fileUrl} className='w-10 h-10 rounded-full' alt="" />
+                                <img src={items?.mediaFiles[0]?.fileUrl || DummyBusinessImage} className='w-10 h-10 rounded-full' alt="" />
                               </div>
                               <div className="right-business-name">
                                 <p className='text-sm'>{items?.name} </p>

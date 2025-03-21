@@ -1,28 +1,28 @@
-import React, { useState, useEffect , useRef } from "react";
-import BusinessOwner from "../../assets/images/business-owner-pic.jpg";
-import GmailIcon from "../../assets/images/gmail-icon.svg";
-import VegIcon from "../../assets/images/veg-icon.svg";
-import NonVegIcon from "../../assets/images/non-veg-icon.svg";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Navigation, Pagination } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/effect-coverflow";
+import React, { useState, useEffect, useRef } from "react";
+import PropTypes from "prop-types";
 import "./Businesses.scss";
 import { Formik, Form, Field } from "formik";
 import { businessFormAddValidation } from "../../utils/Validation";
 import Select from "react-select";
 import FileUploadIcon from "../../assets/images/file-upload-icon.svg";
 import makeAnimated from "react-select/animated";
+import VegIcon from "../../assets/images/veg-icon.svg";
+import NonVegIcon from "../../assets/images/non-veg-icon.svg";
 import MapIcon from "../../assets/images/maps-icon-input.svg";
 import axios from "axios";
 import Modal from "react-modal";
-import { GoogleMap,  LoadScript,  Marker,  useJsApiLoader, StandaloneSearchBox,} from "@react-google-maps/api";
+
+import {
+  GoogleMap,
+  LoadScript,
+  Marker,
+  useJsApiLoader,
+  StandaloneSearchBox,
+} from "@react-google-maps/api";
 import { config } from "../../env-services";
 import { useLocation, useNavigate } from "react-router-dom";
 import Loader from "../../utils/Loader/Loader";
 import toast from "react-hot-toast";
-import EmptyImage from '../../assets/images/empty-image-bg.jpg';
-
 
 const animatedComponents = makeAnimated();
 
@@ -30,496 +30,389 @@ const GOOGLE_MAPS_API_KEY = "AIzaSyCfHCytpE0Oq4tvXmCWaOl05iyH_OfLGuM";
 
 
 
-const BusinessDetails = () => {
 
 
-  const navigate = useNavigate();
-  const location = useLocation();
+const EditBusiness = () => {
 
-  const receivedData = location.state?.items || "";
-
-  console.log("receivedData", receivedData);
-
-  const amenities = [
-    {
-      icon: "ri-wifi-line",
-      title: "Free Wifi",
-    },
-    {
-      icon: "ri-snowflake-line",
-      title: "Air Conditioning",
-    },
-    {
-      icon: "ri-parking-box-line",
-      title: "Free Parking",
-    },
-  ];
-
-  const businessPhotosNew = [
-    {
-      image: receivedData?.mediaFiles[0]?.fileUrl || EmptyImage,
-    },
-    {
-      image: receivedData?.mediaFiles[1]?.fileUrl || EmptyImage,
-    },
-    {
-      image: receivedData?.mediaFiles[0]?.fileUrl || EmptyImage,
-    },
-    {
-      image: receivedData?.mediaFiles[1]?.fileUrl || EmptyImage,
-    },
-    {
-      image: receivedData?.mediaFiles[0]?.fileUrl || EmptyImage,
-    },
-    {
-      image: receivedData?.mediaFiles[1]?.fileUrl || EmptyImage,
-    },
-    {
-      image: receivedData?.mediaFiles[0]?.fileUrl || EmptyImage,
-    },
-    {
-      image: receivedData?.mediaFiles[1]?.fileUrl || EmptyImage,
-    },
-  ];
-
-  const amenitiesArray =  receivedData?.amenities.map((item) => ({
-    value: item._id,
-    label: item.name, 
-  }));
-
-  const foodItems = [
-    {
-      title: "Mixed Vegetable Biryani",
-      veg: true,
-      pirce: "₹200.00",
-    },
-    {
-      title: "Chicken Biryani",
-      veg: false,
-      pirce: "350.00",
-    },
-    {
-      title: "Schezwan Fried Rice",
-      veg: false,
-      pirce: "₹460.00",
-    },
-    {
-      title: "Paneer Biryani",
-      veg: true,
-      pirce: "₹200.00",
-    },
-    {
-      title: "Butter Chicken",
-      veg: false,
-      pirce: "₹450.00",
-    },
-    {
-      title: "Chicken Biryani",
-      veg: false,
-      pirce: "350.00",
-    },
-    {
-      title: "Schezwan Fried Rice",
-      veg: false,
-      pirce: "₹460.00",
-    },
-    {
-      title: "Paneer Biryani",
-      veg: true,
-      pirce: "₹200.00",
-    },
-  ];
-
-  const long = receivedData?.location?.coordinates[0];
-  const lat = receivedData?.location?.coordinates[1];
-
-  const openGoogleMaps = () => {
-    const url = `https://www.google.com/maps?q=${lat},${long}`;
-    window.open(url, "_blank");
-  };
-
-
-
-
-  // -----------------------------------------------
-
-        const [businessDoc, setBusinessDoc] = useState();
-        const [multiAmentites, setMultiAmenities] = useState();
-        const [businessPhotos, setBusinessPhotos] = useState([]);
-        const [foodItemsArray, setFoodItemsArray] = useState([]);
-        const [mapCenter, setMapCenter] = useState({ lat: 17.0005, lng: 81.804 });
-        const [selectedLocation, setSelectedLocation] = useState(null);
-        const [modalIsOpen, setModalIsOpen] = useState(false);
-      
-        const [busCates, setBusCates] = useState([]);
-        const [busAmenities, setBusAmenities] = useState([]);
-        const [states, setStates] = useState([]);
-        const [cities, setCities] = useState([]);
-        const [pincodes, setPincodes] = useState([]);
-      
-        const [userToken, setUserToken] = useState("");
-        const [allUsers, setAllUsers] = useState([]);
-      
-        const [socialMediaInput, setSocialMediaInput] = useState("");
-        const [socialMediaLinks, setSocialMediaLinks] = useState([]);
-
-        const [editMode , setEditMode] = useState(false)
-      
-      
-      
-        useEffect(() => {
-          getAllCategories();
-          getAllAmenities();
-          getStates();
-          getUserDetails();
-        }, []);
-      
-        const getUserDetails = async () => {
-          const response = localStorage.getItem("adminToken");
-          if (!response) return;
-      
-          const userParse = JSON.parse(response);
-          setUserToken(userParse);
-          getAllUsers(userParse);
-        };
-      
-        const customStyles = {
-          content: {
-            top: "50%",
-            left: "50%",
-            right: "auto",
-            bottom: "auto",
-            marginRight: "-50%",
-            transform: "translate(-50%, -50%)",
-            width: "600px",
-            borderRadius: 18,
-            paddingLeft: 40,
-          },
-        };
-      
-        const isValidURL = (url) => {
-          const urlPattern = /^(https?:\/\/)?([\w\d-]+\.)+\w{2,}(\/[\w\d-./?%&=]*)?$/;
-            return urlPattern.test(url);
-        };
-      
-        const addSocialMediaLink = () => {
-            if (!socialMediaInput.trim()) {
-                alert("Please enter a URL");
-                return;
+    const navigate = useNavigate();
+      const location = useLocation();
+    
+      const receivedMail = location.state?.readEmail || "";
+      const receivedToken = location.state?.token || "";
+    
+      const [businessDoc, setBusinessDoc] = useState();
+      const [multiAmentites, setMultiAmenities] = useState();
+      const [businessPhotos, setBusinessPhotos] = useState([]);
+      const [foodItemsArray, setFoodItemsArray] = useState([]);
+      const [mapCenter, setMapCenter] = useState({ lat: 17.0005, lng: 81.804 });
+      const [selectedLocation, setSelectedLocation] = useState(null);
+      const [modalIsOpen, setModalIsOpen] = useState(false);
+    
+      const [busCates, setBusCates] = useState([]);
+      const [busAmenities, setBusAmenities] = useState([]);
+      const [states, setStates] = useState([]);
+      const [cities, setCities] = useState([]);
+      const [pincodes, setPincodes] = useState([]);
+    
+      const [userToken, setUserToken] = useState("");
+      const [allUsers, setAllUsers] = useState([]);
+    
+      const [socialMediaInput, setSocialMediaInput] = useState("");
+      const [socialMediaLinks, setSocialMediaLinks] = useState([]);
+    
+    
+    
+      useEffect(() => {
+        getAllCategories();
+        getAllAmenities();
+        getStates();
+        getUserDetails();
+      }, []);
+    
+      const getUserDetails = async () => {
+        const response = localStorage.getItem("adminToken");
+        if (!response) return;
+    
+        const userParse = JSON.parse(response);
+        setUserToken(userParse);
+        getAllUsers(userParse);
+      };
+    
+      const customStyles = {
+        content: {
+          top: "50%",
+          left: "50%",
+          right: "auto",
+          bottom: "auto",
+          marginRight: "-50%",
+          transform: "translate(-50%, -50%)",
+          width: "600px",
+          borderRadius: 18,
+          paddingLeft: 40,
+        },
+      };
+    
+      const isValidURL = (url) => {
+        const urlPattern = /^(https?:\/\/)?([\w\d-]+\.)+\w{2,}(\/[\w\d-./?%&=]*)?$/;
+          return urlPattern.test(url);
+      };
+    
+      const addSocialMediaLink = () => {
+          if (!socialMediaInput.trim()) {
+              alert("Please enter a URL");
+              return;
+          }
+    
+          if (!isValidURL(socialMediaInput)) {
+              alert("Please enter a valid URL");
+              return;
+          }
+    
+          setSocialMediaLinks([...socialMediaLinks, socialMediaInput]);
+          setSocialMediaInput(""); 
+          setError(""); 
+      };
+    
+      const removeSocialMediaLink = (index) => {
+          setSocialMediaLinks(socialMediaLinks.filter((_, i) => i !== index));
+      };
+    
+    
+      const getAllUsers = async (token) => {
+        await axios
+          .get(`${config.api}admin/users`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          })
+          .then((response) => {
+            // console.log(response , "All Users")
+            if (response?.data?.data) {
+              const alignedUsers = response?.data?.data.map((item) => ({
+                value: item._id,
+                label: item.email,
+              }));
+              setAllUsers(alignedUsers);
             }
-      
-            if (!isValidURL(socialMediaInput)) {
-                alert("Please enter a valid URL");
-                return;
+          });
+      };
+    
+      const getAllCategories = async () => {
+        try {
+          const response = await axios.get(config.api + `business-category`);
+          const categories = response?.data?.data.map((item) => ({
+            value: item._id,
+            label: item.name,
+          }));
+    
+          setBusCates(categories);
+          // console.log('Formatted Categories:', categories);
+        } catch (error) {
+          console.error("Error fetching categories:", error);
+        }
+      };
+    
+      const getAllAmenities = async () => {
+        try {
+          const response = await axios.get(config.api + `business-amenity`);
+          const amenities = response?.data?.data.map((item) => ({
+            value: item._id,
+            label: item.name,
+          }));
+    
+          setBusAmenities(amenities);
+          // console.log('Formatted amenities:', amenities);
+        } catch (error) {
+          console.error("Error fetching categories:", error);
+        }
+      };
+    
+      const getStates = async () => {
+        await axios
+          .get(config.api + "locations/countries/678da88c9c4467c6aa4eeb86/states")
+          .then((response) => {
+            if (response?.data?.data) {
+              const formattedStates = response?.data?.data.map((item) => ({
+                value: item._id,
+                label: item.name,
+              }));
+    
+              setStates(formattedStates);
             }
-      
-            setSocialMediaLinks([...socialMediaLinks, socialMediaInput]);
-            setSocialMediaInput(""); 
-            setError(""); 
-        };
-      
-        const removeSocialMediaLink = (index) => {
-            setSocialMediaLinks(socialMediaLinks.filter((_, i) => i !== index));
-        };
-      
-      
-        const getAllUsers = async (token) => {
-          await axios
-            .get(`${config.api}admin/users`, {
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-              },
+          });
+      };
+    
+      const getCities = async (id) => {
+        await axios
+          .get(config.api + `locations/states/${id}/cities`)
+          .then((response) => {
+            if (response?.data?.data) {
+              const formattedCities = response?.data?.data.map((item) => ({
+                value: item._id,
+                label: item.name,
+              }));
+              setCities(formattedCities);
+            }
+          });
+      };
+    
+      const getPincodes = async (id) => {
+        await axios
+          .get(config.api + `locations/cities/${id}/pincodes`)
+          .then((response) => {
+            if (response?.data?.data) {
+              const formattedCities = response.data.data.map((item) => ({
+                value: item._id,
+                label: item.code,
+              }));
+              setPincodes(formattedCities);
+            }
+          });
+      };
+    
+      const inputRef = useRef(null);
+    
+      const { isLoaded } = useJsApiLoader({
+        id: "google-map-script",
+        googleMapsApiKey: GOOGLE_MAPS_API_KEY,
+        libraries: ["places"],
+      });
+    
+      const handlePlacesChange = () => {
+        const places = inputRef.current.getPlaces();
+        if (places.length > 0) {
+          const location = places[0].geometry.location;
+          const lat = location.lat();
+          const lng = location.lng();
+    
+          setMapCenter({ lat, lng });
+          setSelectedLocation({ lat, lng });
+          // console.log(`Selected Location: Latitude: ${lat}, Longitude: ${lng}`);
+        }
+      };
+
+    
+      const businessAddValues = {
+        userName: "",
+        businessName: "",
+        businessState: "",
+        businessCity: "",
+        businessTitle: "",
+        businessCategory: "",
+        mobileNumber: "",
+        workingHours: "",
+        servicesOffer: "",
+        email: "",
+        socialMedia: "",
+        completeAddress: "",
+        landmark: "",
+        pincode: "",
+        yearlyTurnOver: "",
+        noOfEmployees: "",
+        yearOfEstablishment: "",
+        websiteAddress: "",
+        GSTNumber: "",
+        itemName: "",
+        itemType: "",
+        itemPrice: "",
+        userId: "",
+      };
+    
+      const workingHours = [
+        { value: "10:00 AM - 6:00 PM 8Hrs", label: "10:00 AM - 6:00 PM 8Hrs" },
+        { value: "09:00 AM - 6:00 PM 9Hrs", label: "09:00 AM - 6:00 PM 9Hrs" },
+        { value: "10:00 AM - 10:00 PM 12Hrs", label: "10:00 AM - 10:00 PM 12Hrs" },
+      ];
+    
+      const servicesOffered = [
+        { value: "B2B", label: "B2B (Business-to-Business)" },
+        { value: "B2C", label: "B2C (Business-to-Consumer)" },
+        { value: "Both", label: "Both" },
+      ];
+    
+      const foodItemTypes = [
+        { value: "Veg", label: "Veg" },
+        { value: "Non-Veg", label: "Non-Veg" },
+      ];
+    
+      const handleBusinessDocFile = async (event) => {
+        const file = event.target.files[0];
+        if (file) {
+          const maxSize = 4 * 1024 * 1024;
+          if (file.size > maxSize) {
+            alert("File size exceeds 4MB. Please upload a smaller file.");
+            return;
+          }
+          setBusinessDoc(file);
+        }
+      };
+    
+      const handleFileChange = async (e) => {
+        const selectedFiles = Array.from(e.target.files);
+    
+        const validFiles = selectedFiles.filter((file) => {
+          if (file.size > 2 * 1024 * 1024) {
+            alert(`File ${file.name} exceeds 2MB and will not be uploaded.`);
+            return false;
+          }
+          return file.type === "image/jpeg" || file.type === "image/png";
+        });
+    
+        const base64Photos = await Promise.all(
+          validFiles.map((file) => fileToBase64(file))
+        );
+        setBusinessPhotos((prevPhotos) => [...prevPhotos, ...base64Photos]);
+      };
+    
+      const fileToBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = (error) => reject(error);
+          reader.readAsDataURL(file);
+        });
+      };
+    
+      const addFoodItem = (values) => {
+        const { itemName, itemType, itemPrice } = values;
+        const newFoodItem = { itemName, itemType, itemPrice };
+        setFoodItemsArray((prevFoodItemsArray) => [
+          ...prevFoodItemsArray,
+          newFoodItem,
+        ]);
+      };
+    
+      const removeFoodItem = (index) => {
+        setFoodItemsArray((prevFoodItemsArray) =>
+          prevFoodItemsArray.filter((_, i) => i !== index)
+        );
+      };
+    
+      const handleRemoveImage = (indexToRemove) => {
+        setBusinessPhotos((prevPhotos) =>
+          prevPhotos.filter((_, index) => index !== indexToRemove)
+        );
+      };
+    
+      function numbersOnly(e) {
+        var key = e.key;
+        var regex = /[0-9]|\./;
+        if (!regex.test(key)) {
+          e.preventDefault();
+        } else {
+          console.log("You pressed a key: " + key);
+        }
+      }
+
+    const handleAddingBusiness = async (data) => {
+        const formData = new FormData();
+        formData.append("userName", data.userName);
+        formData.append("name", data.businessName);
+        formData.append("title", data.businessTitle);
+        formData.append("mobileNumber", data.mobileNumber);
+        formData.append("email", data.email);
+        socialMediaLinks.forEach((items) => {
+            formData.append('socialMediaLink' , items);
+        })
+        formData.append("categoryId", data.businessCategory);
+        formData.append("yearlyTurnOver", data.yearlyTurnOver);
+        formData.append("noOfEmployees", data.noOfEmployees);
+        formData.append("yearOfEstablishment", data.yearOfEstablishment);
+        formData.append("websiteAddress", data.websiteAddress);
+        formData.append("GSTNumber", data.GSTNumber);
+        multiAmentites.forEach((amenities) => {
+            console.log(amenities);
+            formData.append("amenities", amenities.value);
+        });
+        formData.append("servicesOffer", data.servicesOffer);
+        formData.append("stateId", data.businessState);
+        formData.append("cityId", data.businessCity);
+        formData.append("pincodeId", data.pincode);
+        formData.append("completeAddress", data.completeAddress);
+        formData.append("landmark", data.landmark);
+        formData.append("workingHours", data.workingHours);
+        formData.append("file", businessDoc);
+        formData.append("latitude", selectedLocation?.lat);
+        formData.append("longitude", selectedLocation?.lng);
+        formData.append("userId", data.userId);
+    
+        console.log("formData", formData);
+        setModalIsOpen(true);
+        try {
+        await axios
+            .post(`${config.api}admin/business`, formData, {
+                headers: {
+                    Authorization: `Bearer ${userToken}`,
+                },
             })
             .then((response) => {
-              // console.log(response , "All Users")
-              if (response?.data?.data) {
-                const alignedUsers = response?.data?.data.map((item) => ({
-                  value: item._id,
-                  label: item.email,
-                }));
-                setAllUsers(alignedUsers);
-              }
-            });
-        };
-      
-        const getAllCategories = async () => {
-          try {
-            const response = await axios.get(config.api + `business-category`);
-            const categories = response?.data?.data.map((item) => ({
-              value: item._id,
-              label: item.name,
-            }));
-      
-            setBusCates(categories);
-            // console.log('Formatted Categories:', categories);
-          } catch (error) {
-            console.error("Error fetching categories:", error);
-          }
-        };
-      
-        const getAllAmenities = async () => {
-          try {
-            const response = await axios.get(config.api + `business-amenity`);
-            const amenities = response?.data?.data.map((item) => ({
-              value: item._id,
-              label: item.name,
-            }));
-      
-            setBusAmenities(amenities);
-            // console.log('Formatted amenities:', amenities);
-          } catch (error) {
-            console.error("Error fetching categories:", error);
-          }
-        };
-      
-        const getStates = async () => {
-          await axios
-            .get(config.api + "locations/countries/678da88c9c4467c6aa4eeb86/states")
-            .then((response) => {
-              if (response?.data?.data) {
-                const formattedStates = response?.data?.data.map((item) => ({
-                  value: item._id,
-                  label: item.name,
-                }));
-      
-                setStates(formattedStates);
-              }
-            });
-        };
-      
-        const getCities = async (id) => {
-          await axios
-            .get(config.api + `locations/states/${id}/cities`)
-            .then((response) => {
-              if (response?.data?.data) {
-                const formattedCities = response?.data?.data.map((item) => ({
-                  value: item._id,
-                  label: item.name,
-                }));
-                setCities(formattedCities);
-              }
-            });
-        };
-      
-        const getPincodes = async (id) => {
-          await axios
-            .get(config.api + `locations/cities/${id}/pincodes`)
-            .then((response) => {
-              if (response?.data?.data) {
-                const formattedCities = response.data.data.map((item) => ({
-                  value: item._id,
-                  label: item.code,
-                }));
-                setPincodes(formattedCities);
-              }
-            });
-        };
-      
-        const inputRef = useRef(null);
-      
-        const { isLoaded } = useJsApiLoader({
-          id: "google-map-script",
-          googleMapsApiKey: GOOGLE_MAPS_API_KEY,
-          libraries: ["places"],
-        });
-      
-        const handlePlacesChange = () => {
-          const places = inputRef.current.getPlaces();
-          if (places.length > 0) {
-            const location = places[0].geometry.location;
-            const lat = location.lat();
-            const lng = location.lng();
-      
-            setMapCenter({ lat, lng });
-            setSelectedLocation({ lat, lng });
-            // console.log(`Selected Location: Latitude: ${lat}, Longitude: ${lng}`);
-          }
-        };
-  
-      
-        const businessAddValues = {
-          userName: receivedData?.userName || '',
-          businessName: receivedData?.name ||'',
-          businessState: receivedData?.stateId?._id || '',
-          businessCity: receivedData?.cityId?._id || '',
-          businessTitle: receivedData?.title || '',
-          businessCategory: receivedData?.categoryId?._id || '',
-          mobileNumber: receivedData?.mobileNumber || '',
-          workingHours: receivedData?.workingHours || '',
-          servicesOffer: receivedData?.servicesOffer || '',
-          email: receivedData?.email || '',
-          socialMedia: "",
-          completeAddress: receivedData?.completeAddress || '',
-          landmark: receivedData?.landmark || '',
-          pincode: receivedData?.pincodeId?._id || '',
-          yearlyTurnOver: receivedData?.yearlyTurnOver || '',
-          noOfEmployees: receivedData?.noOfEmployees || '',
-          yearOfEstablishment: receivedData?.yearOfEstablishment || '',
-          websiteAddress: receivedData?.websiteAddress || '',
-          GSTNumber: receivedData?.GSTNumber || '',
-          itemName: "",
-          itemType: "",
-          itemPrice: "",
-          userId: receivedData?.userId?._id || '',
-        };
-      
-        const workingHours = [
-          { value: "10:00 AM - 6:00 PM 8Hrs", label: "10:00 AM - 6:00 PM 8Hrs" },
-          { value: "09:00 AM - 6:00 PM 9Hrs", label: "09:00 AM - 6:00 PM 9Hrs" },
-          { value: "10:00 AM - 10:00 PM 12Hrs", label: "10:00 AM - 10:00 PM 12Hrs" },
-        ];
-      
-        const servicesOffered = [
-          { value: "B2B", label: "B2B (Business-to-Business)" },
-          { value: "B2C", label: "B2C (Business-to-Consumer)" },
-          { value: "Both", label: "Both" },
-        ];
-      
-        const foodItemTypes = [
-          { value: "Veg", label: "Veg" },
-          { value: "Non-Veg", label: "Non-Veg" },
-        ];
-      
-        const handleBusinessDocFile = async (event) => {
-          const file = event.target.files[0];
-          if (file) {
-            const maxSize = 4 * 1024 * 1024;
-            if (file.size > maxSize) {
-              alert("File size exceeds 4MB. Please upload a smaller file.");
-              return;
+            console.log(response);
+            if (response?.data?.status == "success") {
+                toast.success("Business Created Successfully");
+                setModalIsOpen(false);
+                const busId = response?.data?.data?._id;
+                navigate("/business/add-photos", { state: { busId } });
+            } else {
+                toast.error("Error in Creating business");
+                setModalIsOpen(false);
             }
-            setBusinessDoc(file);
-          }
-        };
-      
-        const handleFileChange = async (e) => {
-          const selectedFiles = Array.from(e.target.files);
-      
-          const validFiles = selectedFiles.filter((file) => {
-            if (file.size > 2 * 1024 * 1024) {
-              alert(`File ${file.name} exceeds 2MB and will not be uploaded.`);
-              return false;
-            }
-            return file.type === "image/jpeg" || file.type === "image/png";
-          });
-      
-          const base64Photos = await Promise.all(
-            validFiles.map((file) => fileToBase64(file))
-          );
-          setBusinessPhotos((prevPhotos) => [...prevPhotos, ...base64Photos]);
-        };
-      
-        const fileToBase64 = (file) => {
-          return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = (error) => reject(error);
-            reader.readAsDataURL(file);
-          });
-        };
-      
-        const addFoodItem = (values) => {
-          const { itemName, itemType, itemPrice } = values;
-          const newFoodItem = { itemName, itemType, itemPrice };
-          setFoodItemsArray((prevFoodItemsArray) => [
-            ...prevFoodItemsArray,
-            newFoodItem,
-          ]);
-        };
-      
-        const removeFoodItem = (index) => {
-          setFoodItemsArray((prevFoodItemsArray) =>
-            prevFoodItemsArray.filter((_, i) => i !== index)
-          );
-        };
-      
-        const handleRemoveImage = (indexToRemove) => {
-          setBusinessPhotos((prevPhotos) =>
-            prevPhotos.filter((_, index) => index !== indexToRemove)
-          );
-        };
-      
-        function numbersOnly(e) {
-          var key = e.key;
-          var regex = /[0-9]|\./;
-          if (!regex.test(key)) {
-            e.preventDefault();
-          } else {
-            console.log("You pressed a key: " + key);
-          }
+            })
+            .catch((err) => {
+                console.log(err);
+                setModalIsOpen(false);
+            });
+         console.log("Response:", response.data);
+        } catch (error) {
+            setModalIsOpen(false);
         }
-  
-      const handleAddingBusiness = async (data) => {
-          const formData = new FormData();
-          formData.append("userName", data.userName);
-          formData.append("name", data.businessName);
-          formData.append("title", data.businessTitle);
-          formData.append("mobileNumber", data.mobileNumber);
-          formData.append("email", data.email);
-          socialMediaLinks.forEach((items) => {
-              formData.append('socialMediaLink' , items);
-          })
-          formData.append("categoryId", data.businessCategory);
-          formData.append("yearlyTurnOver", data.yearlyTurnOver);
-          formData.append("noOfEmployees", data.noOfEmployees);
-          formData.append("yearOfEstablishment", data.yearOfEstablishment);
-          formData.append("websiteAddress", data.websiteAddress);
-          formData.append("GSTNumber", data.GSTNumber);
-          multiAmentites.forEach((amenities) => {
-              console.log(amenities);
-              formData.append("amenities", amenities.value);
-          });
-          formData.append("servicesOffer", data.servicesOffer);
-          formData.append("stateId", data.businessState);
-          formData.append("cityId", data.businessCity);
-          formData.append("pincodeId", data.pincode);
-          formData.append("completeAddress", data.completeAddress);
-          formData.append("landmark", data.landmark);
-          formData.append("workingHours", data.workingHours);
-          formData.append("file", businessDoc);
-          formData.append("latitude", selectedLocation?.lat);
-          formData.append("longitude", selectedLocation?.lng);
-          formData.append("userId", data.userId);
-      
-          console.log("formData", formData);
-          setModalIsOpen(true);
-          try {
-          await axios
-              .post(`${config.api}admin/business`, formData, {
-                  headers: {
-                      Authorization: `Bearer ${userToken}`,
-                  },
-              })
-              .then((response) => {
-              console.log(response);
-              if (response?.data?.status == "success") {
-                  toast.success("Business Created Successfully");
-                  setModalIsOpen(false);
-                  const busId = response?.data?.data?._id;
-                  navigate("/business/add-photos", { state: { busId } });
-              } else {
-                  toast.error("Error in Creating business");
-                  setModalIsOpen(false);
-              }
-              })
-              .catch((err) => {
-                  console.log(err);
-                  setModalIsOpen(false);
-              });
-           console.log("Response:", response.data);
-          } catch (error) {
-              setModalIsOpen(false);
-          }
-      };
-      
-  
+    };
+    
 
 
   return (
-    <>
-    {editMode?
-    <div className="AddBusinesses mani-add-business-section bg-DashboardGray w-full min-h-screen h-full">
+    <div>
+        <div className="AddBusinesses mani-add-business-section bg-DashboardGray w-full min-h-screen h-full">
         <Modal
             isOpen={modalIsOpen}
             style={customStyles}
@@ -531,12 +424,12 @@ const BusinessDetails = () => {
             <button
             type="button"
             className="goback-button-sec flex items-center gap-x-4 mb-5"
-            onClick={() => setEditMode(false)}
+            onClick={() => navigate("/business")}
             >
             <div className="backarrow-sec w-8 h-8 rounded-full bg-white flex items-center justify-center">
                 <i className="ri-arrow-left-line text-xl"></i>
             </div>
-            <h4 className="font-medium ">Back</h4>
+            <h4 className="font-medium ">Back to businesses</h4>
             </button>
 
             <div className="inner-main-business-form-section">
@@ -842,28 +735,28 @@ const BusinessDetails = () => {
                                     </div>
                                     <div className="poitions-relative relative z-[9999999]">
                                     <Select options={busCates} 
-                                      placeholder='Select Business Category'
-                                      name='businessCategory'
-                                      styles={{
-                                          control: (baseStyles, state) => ({
-                                              ...baseStyles,
-                                              borderRadius: 10,
-                                              paddingLeft: 8,
-                                              paddingTop: 4,
-                                              paddingBottom: 4,
-                                              borderWidth: 1,
-                                              outlineWidth: 0,
-                                              // borderColor: errors.businessCategory ? '#FF4E4E' : '#B3B3B3',
-                                              fontSize: 16,
-                                              minWidth: '100%',
-                                              height: 50,
-                                              // borderColor: state.isFocused ? 'grey' : 'red',
-                                              boxShadow: state.isFocused ? 'none' : 'none',
-                                              
-                                          }),
-                                          }}
-                                      value={busCates.find(option => option.value === values.businessCategory)} 
-                                      onChange={(option) => {setFieldValue('businessCategory', option ? option.value : '')}}
+                                    placeholder='Select Business Category'
+                                    name='businessCategory'
+                                    styles={{
+                                        control: (baseStyles, state) => ({
+                                            ...baseStyles,
+                                            borderRadius: 10,
+                                            paddingLeft: 8,
+                                            paddingTop: 4,
+                                            paddingBottom: 4,
+                                            borderWidth: 1,
+                                            outlineWidth: 0,
+                                            // borderColor: errors.businessCategory ? '#FF4E4E' : '#B3B3B3',
+                                            fontSize: 16,
+                                            minWidth: '100%',
+                                            height: 50,
+                                            // borderColor: state.isFocused ? 'grey' : 'red',
+                                            boxShadow: state.isFocused ? 'none' : 'none',
+                                            
+                                        }),
+                                        }}
+                                    value={busCates.find(option => option.value === values.businessCategory)} 
+                                    onChange={(option) => {setFieldValue('businessCategory', option ? option.value : '')}}
                                     />    
                                     </div>                             
                                 </div>
@@ -930,29 +823,29 @@ const BusinessDetails = () => {
                                     <p className='text-BusinessFormLabel'>Amenities (Optional)</p>
                                     </div>
                                     <Select options={busAmenities} 
-                                      placeholder='Select Amenities'
-                                      isMulti
-                                      components={animatedComponents}
-                                      closeMenuOnSelect={false}
-                                      styles={{
-                                          control: (baseStyles, state) => ({
-                                              ...baseStyles,
-                                              borderRadius: 10,
-                                              paddingLeft: 8,
-                                              paddingTop: 4,
-                                              paddingBottom: 4,
-                                              borderWidth: 1,
-                                              outlineWidth: 0,
-                                              borderColor: '#B3B3B3',
-                                              fontSize: 16,
-                                              minWidth: '100%',
-                                              minHeight: 50,
-                                              // borderColor: state.isFocused ? 'grey' : 'red',
-                                              boxShadow: state.isFocused ? 'none' : 'none',
-                                          }),
-                                          }}
-                                      value={amenitiesArray || multiAmentites}
-                                      onChange={(option) => setMultiAmenities(option)}
+                                    placeholder='Select Amenities'
+                                    isMulti
+                                    components={animatedComponents}
+                                    closeMenuOnSelect={false}
+                                    styles={{
+                                        control: (baseStyles, state) => ({
+                                            ...baseStyles,
+                                            borderRadius: 10,
+                                            paddingLeft: 8,
+                                            paddingTop: 4,
+                                            paddingBottom: 4,
+                                            borderWidth: 1,
+                                            outlineWidth: 0,
+                                            borderColor: '#B3B3B3',
+                                            fontSize: 16,
+                                            minWidth: '100%',
+                                            minHeight: 50,
+                                            // borderColor: state.isFocused ? 'grey' : 'red',
+                                            boxShadow: state.isFocused ? 'none' : 'none',
+                                        }),
+                                        }}
+                                    value={multiAmentites ? multiAmentites : null}
+                                    onChange={(option) => setMultiAmenities(option)}
                                     />                               
                                 </div>
                                 <div className="form-inputsec relative col-span-6">
@@ -1031,298 +924,9 @@ const BusinessDetails = () => {
             </div>
             </div>
         </div>
-    </div> :
-    <div className="main-business-detail bg-DashboardGray ">
-      <div className="top-searched-detail-rating-favorite-sec sticky top-0 z-[9999] bg-white pl-[270px] py-4 pr-8  flex flex-wrap gap-y-6 items-center justify-between gap-x-5">
-        <div className="left-title-rating-search ">
-          <h4 className="text-2xl font-medium text-Black">
-            {receivedData?.name}
-          </h4>
-          <div className="location-rating-seperate-search flex items-center gap-x-5 mt-3 flex-wrap gap-y-3">
-            <button
-              type="button"
-              className="business-recommended-section flex items-center gap-10p opacity-60"
-            >
-              <i className="ri-map-pin-line text-Black"></i>
-              <p className="text-sm text-LightText">
-                {receivedData?.stateId?.name} - {receivedData?.cityId?.name}
-              </p>
-            </button>
-            <div className="seperator-div h-5 w-[1px] bg-Black"></div>
-            <div className="rating-review-search-text flex items-center gap-x-2">
-              <i className="ri-star-fill text-StarGold"></i>
-              <p>1407+ Ratings</p>
-            </div>
-          </div>
         </div>
-        <div className="right-side-accept-reject-button-section">
-            <div className="two-reviewing-buttons flex items-center gap-4">
-                <button type="button" className="bg-white border border-Secondary text-xl font-medium rounded-lg py-2 px-8 text-Secondary" onClick={() => setEditMode(true)}>Edit</button>
-                <button type="button" className="bg-green-500 text-xl font-semibold rounded-lg py-2 px-8 text-white">Publish</button>
-                <button type="button" className="bg-red-100 text-xl rounded-lg py-2 px-8 text-red-600">Reject</button>
-            </div>
-        </div>
-      </div>
-      <div className="main-search-info-section pl-[270px] py-8 pr-8">
-        <section className="search-info-page-section-2">
-          <div className="inner-search-info-section-2">
-            <div className="photos-section-searched my-5 ">
-              <div className="searched-business-photos rounded-xl overflow-hidden relative">
-                <Swiper
-                  className="mySwiper"
-                  grabCursor={true}
-                  centeredSlides={true}
-                  pagination={true}
-                  slidesPerView={1}
-                  speed={600}
-                  loop={true}
-                  initialSlide={2}
-                  spaceBetween={20}
-                  preventClicks={true}
-                  navigation={{
-                    clickable: true,
-                    nextEl: ".right-side-business-photo-slide-btn",
-                    prevEl: ".left-side-business-photo-slide-btn",
-                  }}
-                  autoplay={{
-                    delay: 2500,
-                    disableOnInteraction: false,
-                  }}
-                  modules={[Autoplay, Navigation, Pagination]}
-                >
-                  {businessPhotosNew.map((items, index) => {
-                    return (
-                      <SwiperSlide key={index}>
-                        <div className="big-image-section-searched searched-image-sections h-[500px]">
-                          <img
-                            src={items.image}
-                            className="h-[500px] object-cover flex"
-                            alt=""
-                          />
-                        </div>
-                      </SwiperSlide>
-                    );
-                  })}
-                </Swiper>
-                <button
-                  type="button"
-                  className="left-side-business-photo-slide-btn similar-business-media-slide-btns w-10 h-10 bg-white shadow-2xl z-[999] rounded-full flex items-center justify-center absolute left-4 top-1/2"
-                >
-                  <i className="bi bi-chevron-left text-2xl"></i>
-                </button>
-                <button
-                  type="button"
-                  className="right-side-business-photo-slide-btn similar-business-media-slide-btns w-10 h-10 bg-white shadow-2xl z-[999] rounded-full flex items-center justify-center absolute right-4 top-1/2"
-                >
-                  <i className="bi bi-chevron-right text-2xl"></i>
-                </button>
-              </div>
-            </div>
-            <div className="about-business-section pb-12">
-              <div className="inner-about-business-grid-section">
-                <div className="grid grid-cols-12 gap-x-5 search-details-main-section-grid">
-                  <div className="col-span-8 about-para-rating-items-section">
-                    <div className="inner-about-rating-section flex flex-col gap-y-10">
-                      <div className="top-about-para-section-searched">
-                        <h4 className="text-20 font-medium text-Black mb-1">
-                          About This Place
-                        </h4>
-                        <p className="text-Black opacity-70">
-                          Beautiful stylish and spacious 2-Bedroom, with 1 king
-                          and 1 queen size bed, and 1 free parking spot plus
-                          visitor parking. Located in one of the best areas of
-                          Downtown Toronto, just a few minutes walk from the CN
-                          tower, Rogers Stadium, Scotiabank Arena and the
-                          lakeshore. The apartment is surrounded by trendy
-                          restaurants, shops and venues. Close to public transit
-                          and main street{" "}
-                        </p>
-                      </div>
-                      <div className="amenities-section-searched">
-                        <h4 className="text-20 font-medium text-Black mb-3">
-                          Amenities
-                        </h4>
-                        <div className="amenities-mapped-section flex items-center gap-x-30p flex-wrap gap-y-4">
-                          {receivedData?.amenities &&
-                          receivedData?.amenities.length > 0
-                            ? receivedData?.amenities.map((items, index) => {
-                                return (
-                                  <div
-                                    className="single-amenities-searched"
-                                    key={index}
-                                  >
-                                    <div className="inner-single-amenities flex items-center gap-x-3">
-                                      <div className="left-amanitie-icon px-6 py-3  rounded-full flex items-center justify-center bg-AmenitiesLightGray">
-                                        <p className="text-Black ">
-                                          {items.name}
-                                        </p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                );
-                              })
-                            : null}
-                        </div>
-                      </div>
-                      <div className="food-items-section-searched">
-                        <div className="food-items-slider">
-                          <div className="food-items-section flex justify-between gap-10 items-center mb-3">
-                            <div className="food-items-heading">
-                              <h4 className="text-20 font-medium text-Black">
-                                Food Items
-                              </h4>
-                            </div>
-                          </div>
-                          <div className="food-items-bottom-slider-section grid grid-cols-3 gap-4">
-                            {foodItems.map((items, index) => {
-                              return (
-                                <div
-                                  className="single-food-item-searched bg-white rounded-lg p-3"
-                                  key={index}
-                                >
-                                  <div className="top-veg-nonveg-part flex items-center gap-x-2">
-                                    <img
-                                      src={items.veg ? VegIcon : NonVegIcon}
-                                      className="w-[14px] h-[14px]"
-                                      alt=""
-                                    />
-                                    <p className="text-Black">{items.title}</p>
-                                  </div>
-                                  <div className="bottom-price-section mt-3">
-                                    <h4 className="text-Black font-medium">
-                                      {items.pirce} /{" "}
-                                      <span className="text-sm opacity-50">
-                                        person
-                                      </span>
-                                    </h4>
-                                  </div>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="rating-section-searched">
-                        <div className="rating-searched-section flex justify-between gap-10 items-center mb-4">
-                          <div className="rating-searched-heading">
-                            <h4 className="text-20 font-medium text-Black">
-                              Ratings
-                            </h4>
-                            <p className="text-sm text-Black opacity-50">
-                              Total 305 People Rated this place
-                            </p>
-                          </div>
-                        </div>
-                        <div className="rating-searched-bottom-slider-section flex items-center flex-wrap gap-10">
-                          {foodItems.map((items, index) => {
-                            return (
-                              <div
-                                className="single-rating-profile flex items-center gap-x-2"
-                                key={index}
-                              >
-                                <div className="left-image-rating-pro">
-                                  <img
-                                    src={BusinessOwner}
-                                    className="max-w-[50px] max-h-[50px] rounded-full"
-                                    alt=""
-                                  />
-                                </div>
-                                <div className="right-text-rating-profile">
-                                  <h4 className="font-medium text-Black">
-                                    SM. Srinivas Kiran
-                                  </h4>
-                                  <div className="five-stars-section flex items-center gap-x-1">
-                                    <i className="ri-star-fill text-StarGold"></i>
-                                    <i className="ri-star-fill text-StarGold"></i>
-                                    <i className="ri-star-fill text-StarGold"></i>
-                                    <i className="ri-star-fill text-StarGold"></i>
-                                    <i className="ri-star-fill text-StarGold"></i>
-                                  </div>
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-span-4 business-contact-details-right">
-                    <div className="inner-business-contact-details-right bg-white border border-BorderColor  border-opacity-30 rounded-2xl shadow-xl px-5 py-6 sticky top-32">
-                      <div className="top-contact-number-section pb-[18px] border-b border-BorderColor border-opacity-50">
-                        <div className="contatc-info-head mb-3">
-                          <h2 className="text-20 font-medium text-Black">
-                            Contact Information
-                          </h2>
-                        </div>
-                        <button
-                          type="button"
-                          className="number-info-section flex items-center gap-x-3 text-left"
-                        >
-                          <i className="ri-phone-fill text-Secondary"></i>
-                          <p className="font-medium text-Secondary">
-                            {receivedData?.mobileNumber}
-                          </p>
-                        </button>
-                      </div>
-                      <div className="address-info-section py-5 border-b border-BorderColor border-opacity-50">
-                        <h4 className="text-lg font-medium text-Black mb-2">
-                          Address
-                        </h4>
-                        <p className="text-Black opacity-40">
-                          {receivedData?.completeAddress}
-                        </p>
-                        <div className="directions-copy-address-btns flex items-center gap-x-5 justify-between mt-4">
-                          <button
-                            type="button"
-                            onClick={openGoogleMaps}
-                            className="direcions-btn flex items-center gap-x-3 text-left"
-                          >
-                            <i className="ri-corner-up-right-line text-lg text-Secondary"></i>
-                            <p className="font-medium text-Secondary">
-                              Get Directions
-                            </p>
-                          </button>
-                          <button
-                            type="button"
-                            className="direcions-btn flex items-center gap-x-3 text-left"
-                          >
-                            <i className="ri-file-copy-line text-lg text-Secondary"></i>
-                            <p className="font-medium text-Secondary">
-                              Copy Address
-                            </p>
-                          </button>
-                        </div>
-                      </div>
-                      <div className="opens-share-place-section flex flex-col gap-y-4 py-5 ">
-                        <div className="opens-outer-sec flex items-center gap-x-3 text-left">
-                          <i className="ri-timer-line text-lg text-Secondary"></i>
-                          <p className="font-medium text-Black">
-                            <span className="text-Green">
-                              {receivedData?.workingHours}
-                            </span>
-                          </p>
-                        </div>
-                        <button
-                          type="button"
-                          className="share-place-btn flex items-center gap-x-3 text-left"
-                        >
-                          <i className="ri-share-fill text-lg text-Secondary"></i>
-                          <p className="font-medium text-Secondary">
-                            Share this place
-                          </p>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      </div>
-    </div> }
-    </>
-  );
-};
+    </div>
+  )
+}
 
-export default BusinessDetails;
+export default EditBusiness
