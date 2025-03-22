@@ -20,6 +20,8 @@ import Profile from './Components/Profile/Profile'
 import Cities from './Components/Cities/Cities'
 import AddCities from './Components/Cities/AddCities'
 import BusinessDetails from './Components/Businesses/BusinessDetails'
+import UserDetails from './Components/Users/UserDetails'
+import EditCategory from './Components/Categories/EditCategory'
 
 
 const Layout = () => {
@@ -34,8 +36,10 @@ const Layout = () => {
             <Route exact={true} Component={BusinessDetails} path='/business/details'/>
             <Route exact={true} Component={Categories} path='/categories'/>
             <Route exact={true} Component={AddCategory} path='/categories/add-category'/>
+            <Route exact={true} Component={EditCategory} path='/categories/edit-category'/>
             <Route exact={true} Component={Users} path='/users'/>
             <Route exact={true} Component={AddUser} path='/users/add-user'/>
+            <Route exact={true} Component={UserDetails} path='/users/user-details'/>
             <Route exact={true} Component={Advertisements} path='/advertisements'/>
             <Route exact={true} Component={AddAdvertisement} path='/advertisements/add-advertisements'/>
             <Route exact={true} Component={Cities} path='/cities'/>

@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { config } from '../../env-services';
 import DeleteIcon from '../../assets/images/delete-icon.svg';
+import EditIcon from '../../assets/images/edit-icon.svg'
 import toast from 'react-hot-toast';
 import Modal from 'react-modal';
 import Lottie from 'lottie-react';
@@ -141,17 +142,22 @@ const Categories = () => {
                 filteredCategories.map((items , index) => {
                   return (
                     <div className="single-category-item bg-white rounded-10p p-[15px] relative" key={index}>
-                        <div className="inner-single-category-item flex items-center gap-5">
+                        <div className="inner-single-category-item flex flex-col gap-2">
                             <div className="left-side-image-category">
-                                <img src={items?.icon} className='object-contain max-w-[40px] max-h-[40px] min-w-[35px]' alt="" />
+                                <img src={items?.icon} className='object-contain w-10 h-10' alt="" />
                             </div>
                             <div className="right-side-category-name">
                                 <p className='text-Black font-medium capitalize'>{items?.name}</p>
                             </div>
                         </div>
-                        <button type="button" onClick={() => {setModalData(items) ; setModalIsOpen(true)}} className='w-10 h-10 rounded-full bg-white  flex items-center justify-center absolute top-2 right-2'>
-                          <img src={DeleteIcon} className='w-5 h-5' alt="" />
-                        </button>
+                        <div className="edit-delete-btns-abs flex items-center gap-4 absolute top-4 right-4">
+                          <button type="button" onClick={() => navigate('/categories/edit-category' , {state: {items}})} className=' rounded-full bg-white  flex items-center justify-center '>
+                            <img src={EditIcon} className='w-[18px] h-[18px]' alt="" />
+                          </button>
+                          <button type="button" onClick={() => {setModalData(items) ; setModalIsOpen(true)}} className=' rounded-full bg-white  flex items-center justify-center '>
+                            <img src={DeleteIcon} className='w-[18px] h-[18px]' alt="" />
+                          </button>
+                        </div>
                     </div>
                   )
                 }) : 

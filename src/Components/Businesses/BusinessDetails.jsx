@@ -108,26 +108,6 @@ const BusinessDetails = () => {
       veg: true,
       pirce: "₹200.00",
     },
-    {
-      title: "Butter Chicken",
-      veg: false,
-      pirce: "₹450.00",
-    },
-    {
-      title: "Chicken Biryani",
-      veg: false,
-      pirce: "350.00",
-    },
-    {
-      title: "Schezwan Fried Rice",
-      veg: false,
-      pirce: "₹460.00",
-    },
-    {
-      title: "Paneer Biryani",
-      veg: true,
-      pirce: "₹200.00",
-    },
   ];
 
   const long = receivedData?.location?.coordinates[0];
@@ -173,6 +153,13 @@ const BusinessDetails = () => {
           getStates();
           getUserDetails();
         }, []);
+
+              
+        useEffect(() => {
+          getCities(receivedData?.stateId?._id)
+          getPincodes(receivedData?.pincodeId?._id)
+        }, []);
+        
       
         const getUserDetails = async () => {
           const response = localStorage.getItem("adminToken");
@@ -1164,7 +1151,7 @@ const BusinessDetails = () => {
                             : null}
                         </div>
                       </div>
-                      <div className="food-items-section-searched">
+                      <div className="food-items-section-searched hidden">
                         <div className="food-items-slider">
                           <div className="food-items-section flex justify-between gap-10 items-center mb-3">
                             <div className="food-items-heading">

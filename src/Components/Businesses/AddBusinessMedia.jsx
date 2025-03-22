@@ -30,6 +30,8 @@ const AddBusinessMedis = () => {
     const [userToken ,  setUserToken] = useState();
     const [userData , setUserData] = useState("");
 
+    
+
     useEffect(() => {
         getUserDetails()
       } , [])

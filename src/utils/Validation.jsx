@@ -9,12 +9,22 @@ export const adminLoginValidation = yup.object().shape({
 
 
 export const addUserValidation = yup.object().shape({
+    roleId: yup.string().required('Please select role'),
     email: yup.string().email('Please Enter Valid Email').required('Email Address Required'),
     firstName: yup.string().required('Please Enter First Name'),
     lastName: yup.string().required('Please Enter Last Name'),
     password: yup.string().required('Please Enter Password'),
     mobileNumber: yup.number().required('Please Enter Your Mobile Number').min(10 , "Minimum 10 Digits"),
 })
+
+export const updateUserValidation = yup.object().shape({
+    roleId: yup.string().required('Please select role'),
+    email: yup.string().email('Please Enter Valid Email').required('Email Address Required'),
+    firstName: yup.string().required('Please Enter First Name'),
+    lastName: yup.string().required('Please Enter Last Name'),
+    mobileNumber: yup.number().required('Please Enter Your Mobile Number').min(10 , "Minimum 10 Digits"),
+})
+
 
 
 export const businessFormAddValidation = yup.object().shape({

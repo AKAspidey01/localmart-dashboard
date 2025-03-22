@@ -176,7 +176,7 @@ const AddCategory = () => {
             </button>
             <div className="single-form-section-business business-basic-details  rounded-[15px] bg-white">
               <div className="basic-details-heading py-[15px] px-6 border-b border-black border-opacity-20">
-                  <h4 className='text-lg font-medium text-Secondary'>Select a user to create a business</h4>
+                  <h4 className='text-lg font-medium text-Secondary'>Create New Category</h4>
               </div>
               <div className="inner-fields-grid-outer-main p-6 grid grid-cols-12 gap-5 items-end">  
                 <div className="category-add-name col-span-2">
