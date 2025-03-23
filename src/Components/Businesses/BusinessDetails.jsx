@@ -24,6 +24,15 @@ import toast from "react-hot-toast";
 import EmptyImage from '../../assets/images/empty-image-bg.jpg';
 
 
+
+
+// Sharing-images
+import FacebookShare from '../../assets/images/facebook-share.svg';
+import InstagramShare from '../../assets/images/instagram-share.svg';
+import WhatsappShare from '../../assets/images/whatsapp-share.svg';
+import TelegramShare from '../../assets/images/telegram-share.svg';
+
+
 const animatedComponents = makeAnimated();
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyCfHCytpE0Oq4tvXmCWaOl05iyH_OfLGuM";
@@ -38,7 +47,7 @@ const BusinessDetails = () => {
 
   const receivedData = location.state?.items || "";
 
-  console.log("receivedData", receivedData);
+  // console.log("receivedData", receivedData);
 
   const amenities = [
     {
@@ -130,6 +139,7 @@ const BusinessDetails = () => {
         const [mapCenter, setMapCenter] = useState({ lat: 17.0005, lng: 81.804 });
         const [selectedLocation, setSelectedLocation] = useState(null);
         const [modalIsOpen, setModalIsOpen] = useState(false);
+        const [shareModalOpen , setShareModalOpen] = useState(false);
       
         const [busCates, setBusCates] = useState([]);
         const [busAmenities, setBusAmenities] = useState([]);
@@ -159,6 +169,14 @@ const BusinessDetails = () => {
           getCities(receivedData?.stateId?._id)
           getPincodes(receivedData?.pincodeId?._id)
         }, []);
+
+        const productLink = ``;
+        const handleCopyToClipboard = () => {
+          setShareModalOpen(false)
+          navigator.clipboard.writeText(productLink).then(() => {
+            toast.success("Link copied!");
+          });
+        };
         
       
         const getUserDetails = async () => {
@@ -181,6 +199,20 @@ const BusinessDetails = () => {
             width: "600px",
             borderRadius: 18,
             paddingLeft: 40,
+          },
+        };
+
+        const customStyles2 = {
+          content: {
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            transform: "translate(-50%, -50%)",
+            width: "600px",
+            borderRadius: 18,
+            paddingLeft: 20,
           },
         };
       
@@ -433,7 +465,7 @@ const BusinessDetails = () => {
           if (!regex.test(key)) {
             e.preventDefault();
           } else {
-            console.log("You pressed a key: " + key);
+            // console.log("You pressed a key: " + key);
           }
         }
   
@@ -454,7 +486,6 @@ const BusinessDetails = () => {
           formData.append("websiteAddress", data.websiteAddress);
           formData.append("GSTNumber", data.GSTNumber);
           multiAmentites.forEach((amenities) => {
-              console.log(amenities);
               formData.append("amenities", amenities.value);
           });
           formData.append("servicesOffer", data.servicesOffer);
@@ -469,7 +500,7 @@ const BusinessDetails = () => {
           formData.append("longitude", selectedLocation?.lng);
           formData.append("userId", data.userId);
       
-          console.log("formData", formData);
+          // console.log("formData", formData);
           setModalIsOpen(true);
           try {
           await axios
@@ -479,7 +510,7 @@ const BusinessDetails = () => {
                   },
               })
               .then((response) => {
-              console.log(response);
+              // console.log(response);
               if (response?.data?.status == "success") {
                   toast.success("Business Created Successfully");
                   setModalIsOpen(false);
@@ -494,12 +525,14 @@ const BusinessDetails = () => {
                   console.log(err);
                   setModalIsOpen(false);
               });
-           console.log("Response:", response.data);
+          //  console.log("Response:", response.data);
           } catch (error) {
               setModalIsOpen(false);
           }
       };
       
+
+
   
 
 
@@ -516,510 +549,554 @@ const BusinessDetails = () => {
         </Modal>
         <div className="inner-add-business-section  pl-[270px] py-8 pr-8">
             <button
-            type="button"
-            className="goback-button-sec flex items-center gap-x-4 mb-5"
-            onClick={() => setEditMode(false)}
+              type="button"
+              className="goback-button-sec flex items-center gap-x-4 mb-5"
+              onClick={() => setEditMode(false)}
             >
-            <div className="backarrow-sec w-8 h-8 rounded-full bg-white flex items-center justify-center">
-                <i className="ri-arrow-left-line text-xl"></i>
-            </div>
-            <h4 className="font-medium ">Back</h4>
+              <div className="backarrow-sec w-8 h-8 rounded-full bg-white flex items-center justify-center">
+                  <i className="ri-arrow-left-line text-xl"></i>
+              </div>
+              <h4 className="font-medium ">Back</h4>
             </button>
-
             <div className="inner-main-business-form-section">
-            <div className="">
-                <div className="bottom-form-section-business-add">
-                <div className="inner-business-form-section">
-                    <div className="single-form-section-business">
-                    <Formik
-                        validationSchema={businessFormAddValidation}
-                        initialValues={businessAddValues}
-                        onSubmit={(values) => handleAddingBusiness(values)}
-                    >
-                        {({errors, touched, handleSubmit, setFieldValue, values}) => (
-                        <Form>
-                            <div className="main-business-former-sec flex flex-col gap-10">
-                            <div className="single-form-section-business business-basic-details  rounded-[15px] bg-white">
-                                <div className="basic-details-heading py-[15px] px-6 border-b border-black border-opacity-20">
-                                <h4 className="text-lg font-medium text-Secondary">
-                                    Select a user to create a business
-                                </h4>
-                                </div>
-                                <div className="inner-fields-grid-outer-main p-6 grid grid-cols-12 gap-5 items-end">
-                                <div className="form-inputsec relative col-span-6">
-                                    <div className="label-section mb-1">
-                                    <p className="text-BusinessFormLabel">
-                                        Select User*
-                                    </p>
+              <div className="">
+                  <div className="bottom-form-section-business-add">
+                    <div className="inner-business-form-section">
+                        <div className="single-form-section-business">
+                        <Formik
+                            validationSchema={businessFormAddValidation}
+                            initialValues={businessAddValues}
+                            onSubmit={(values) => handleAddingBusiness(values)}
+                        >
+                            {({errors, touched, handleSubmit, setFieldValue, values}) => (
+                            <Form>
+                                <div className="main-business-former-sec flex flex-col gap-10">
+                                <div className="single-form-section-business business-basic-details  rounded-[15px] bg-white">
+                                    <div className="basic-details-heading py-[15px] px-6 border-b border-black border-opacity-20">
+                                    <h4 className="text-lg font-medium text-Secondary">
+                                        Select a user to create a business
+                                    </h4>
                                     </div>
-                                    <Select
-                                    options={allUsers}
-                                    placeholder="Slect User"
-                                    name="userId"
-                                    styles={{
-                                        control: (baseStyles, state) => ({
-                                        ...baseStyles,
-                                        borderRadius: 10,
-                                        paddingLeft: 8,
-                                        paddingTop: 4,
-                                        paddingBottom: 4,
-                                        borderWidth: 1,
-                                        outlineWidth: 0,
-                                        borderColor: errors.userId ? "#FF4E4E" : "#B3B3B3",
-                                        fontSize: 16,
-                                        minWidth: "100%",
-                                        height: 50,
-                                        // borderColor: state.isFocused ? 'grey' : 'red',
-                                        boxShadow: state.isFocused  ? "none" : "none",
-                                        }),
-                                    }}
-                                    value={allUsers.find(
-                                        (option) => option.value === values.userId
-                                    )}
-                                    onChange={(option) => { setFieldValue( "userId", option ? option.value : "" );}}
-                                    />
-                                </div>
-                                <div className="right-create-business-for-new-user col-span-6">
-                                    <div className="inner-create-new-user">
-                                    <div className="bottom-form-submitter overflow-hidden relative group ">
-                                        <button
-                                        type="button"
-                                        onClick={() =>
-                                            navigate("/users/add-user")
-                                        }
-                                        className="w-full py-4 px-4 rounded-xl  font-semibold text-lg h-full bg-white border border-Secondary  text-Secondary disabled:bg-opacity-35 "
-                                        >
-                                        Create New User
-                                        </button>
+                                    <div className="inner-fields-grid-outer-main p-6 grid grid-cols-12 gap-5 items-end">
+                                    <div className="form-inputsec relative col-span-6">
+                                        <div className="label-section mb-1">
+                                        <p className="text-BusinessFormLabel">
+                                            Select User*
+                                        </p>
+                                        </div>
+                                        <Select
+                                        options={allUsers}
+                                        placeholder="Slect User"
+                                        name="userId"
+                                        styles={{
+                                            control: (baseStyles, state) => ({
+                                            ...baseStyles,
+                                            borderRadius: 10,
+                                            paddingLeft: 8,
+                                            paddingTop: 4,
+                                            paddingBottom: 4,
+                                            borderWidth: 1,
+                                            outlineWidth: 0,
+                                            borderColor: errors.userId ? "#FF4E4E" : "#B3B3B3",
+                                            fontSize: 16,
+                                            minWidth: "100%",
+                                            height: 50,
+                                            // borderColor: state.isFocused ? 'grey' : 'red',
+                                            boxShadow: state.isFocused  ? "none" : "none",
+                                            }),
+                                        }}
+                                        value={allUsers.find(
+                                            (option) => option.value === values.userId
+                                        )}
+                                        onChange={(option) => { setFieldValue( "userId", option ? option.value : "" );}}
+                                        />
                                     </div>
-                                    </div>
-                                </div>
-                                </div>
-                            </div>
-                            <div className="single-form-section-business business-basic-details overflow-hidden rounded-[15px] bg-white">
-                                <div className="basic-details-heading py-[15px] px-6 border-b border-black border-opacity-20">
-                                <h4 className='text-lg font-medium text-Secondary'>Basic Details</h4>
-                                </div>
-                                <div className="inner-fields-grid-outer-main p-6 grid grid-cols-12 gap-5">
-                                <div className="form-inputsec relative col-span-4">
-                                    <div className="label-section mb-1">
-                                    <p className='text-BusinessFormLabel'>User Name (optional)</p>
-                                    </div>
-                                    <Field type="text" name="userName" placeholder='Enter User Name'
-                                        className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.userName && touched.userName ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
-                                    />                                
-                                </div>
-                                <div className="form-inputsec relative col-span-8">
-                                    <div className="label-section mb-1">
-                                    <p className='text-BusinessFormLabel'>Business Name*</p>
-                                    </div>
-                                    <Field type="text" name="businessName" placeholder='Enter Business Name*'
-                                        className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.businessName && touched.businessName ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
-                                    />                                
-                                </div>
-                                <div className="form-inputsec relative col-span-12">
-                                    <div className="label-section mb-1">
-                                    <p className='text-BusinessFormLabel'>Business Title (optional)</p>
-                                    </div>
-                                    <Field type="text" name="businessTitle" placeholder='Enter Business Title (optional)'
-                                        className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black border-LoginFormBorder placeholder:text-Black`} 
-                                    />                                
-                                </div>
-                                </div>
-                            </div>
-                            <div className="single-form-section-business business-basic-details overflow-hidden rounded-[15px] bg-white">
-                                <div className="basic-details-heading py-[15px] px-6 border-b border-black border-opacity-20">
-                                <h4 className='text-lg font-medium text-Secondary'>Contact Information</h4>
-                                </div>
-                                <div className="inner-fields-grid-outer-main p-6 grid grid-cols-12 gap-5">
-                                <div className="form-inputsec relative col-span-6">
-                                    <div className="label-section mb-1">
-                                    <p className='text-BusinessFormLabel'>Mobile Number (optional)</p>
-                                    </div>
-                                    <Field type="tel" name="mobileNumber" placeholder='Enter Mobile Number' maxLength={10} onKeyPress={(e) => numbersOnly(e)}
-                                        className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.mobileNumber && touched.mobileNumber ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
-                                    />                                
-                                </div>
-                                <div className="form-inputsec relative col-span-6">
-                                    <div className="label-section mb-1">
-                                    <p className='text-BusinessFormLabel'>Email Address (optional)</p>
-                                    </div>
-                                    <Field type="email" name="email" placeholder='Enter Email Address'
-                                        className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.email && touched.email ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
-                                    />                                
-                                </div>
-                                <div className="form-inputsec relative col-span-12">
-                                    <div className="label-section mb-1">
-                                    <p className='text-BusinessFormLabel'>Social Media Links (optional)</p>
-                                    </div>
-                                    <div className="social-media-adding-section relative">
-                                    <Field type="text" name="socialMedia" placeholder='Enter Social Media Link' onKeyUp={(e) => setSocialMediaInput(e.target.value)} 
-                                        className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black ${errors.socialMedia  ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
-                                    />
-                                    <button type="button" onClick={addSocialMediaLink}  className='absolute social-media-adding-button top-1/2 right-1 py-2 px-8 rounded-lg bg-white text-Secondary'>Add Link</button>
-                                    </div>                                      
-                                </div>
-                                {socialMediaLinks.map((items , index) => {
-                                    return (
-                                    <div className="social-meida-links-displayer col-span-12">
-                                        <div className="left-side-link-icon flex items-center justify-between bg-LightGrayBg rounded-[5px] py-2 px-4">
-                                            <div className="text-link-icon-outer flex items-center gap-4">
-                                            <i className="ri-link text-lg text-Secondary"></i>
-                                            <div className="right-text">
-                                                <p className='text-Secondary font-medium'>{items}</p>
-                                            </div>
-                                            </div>
-                                            <div className="remove-link-btn"><button type="button" onClick={() => removeSocialMediaLink(index)} className='w-6 h-6 rounded-full flex items-center justify-center bg-red-100'><i className="ri-close-large-line text-red-600"></i></button></div>
+                                    <div className="right-create-business-for-new-user col-span-6">
+                                        <div className="inner-create-new-user">
+                                        <div className="bottom-form-submitter overflow-hidden relative group ">
+                                            <button
+                                            type="button"
+                                            onClick={() =>
+                                                navigate("/users/add-user")
+                                            }
+                                            className="w-full py-4 px-4 rounded-xl  font-semibold text-lg h-full bg-white border border-Secondary  text-Secondary disabled:bg-opacity-35 "
+                                            >
+                                            Create New User
+                                            </button>
+                                        </div>
                                         </div>
                                     </div>
-                                    )
-                                })}
-                                </div>
-                            </div>
-                            <div className="single-form-section-business business-basic-details rounded-[15px] bg-white">
-                                <div className="basic-details-heading py-[15px] px-6 border-b border-black border-opacity-20">
-                                <h4 className='text-lg font-medium text-Secondary'>Address Information</h4>
-                                </div>
-                                <div className="inner-fields-grid-outer-main p-6 grid grid-cols-12 gap-5">
-                                <div className="form-inputsec relative col-span-6">
-                                    <div className="label-section mb-1">
-                                    <p className='text-BusinessFormLabel'>Select Sate (Optional)</p>
                                     </div>
-                                    <Select options={states} 
-                                    placeholder='Choose State'
-                                    name='businessState'
-                                    styles={{
-                                        control: (baseStyles, state) => ({
-                                            ...baseStyles,
-                                            borderRadius: 10,
-                                            paddingLeft: 8,
-                                            paddingTop: 4,
-                                            paddingBottom: 4,
-                                            borderWidth: 1,
-                                            outlineWidth: 0,
-                                            // borderColor: errors.businessState ? '#FF4E4E' : '#B3B3B3',
-                                            fontSize: 16,
-                                            minWidth: '100%',
-                                            height: 50,
-                                            // borderColor: state.isFocused ? 'grey' : 'red',
-                                            boxShadow: state.isFocused ? 'none' : 'none',
-                                            
-                                        }),
-                                        }}
-                                    value={states.find(option => option.value === values.businessState)} 
-                                    onChange={(option) => {setFieldValue('businessState', option ? option.value : '') , getCities(option.value)}}
-                                    
-                                    />                               
                                 </div>
-                                <div className="form-inputsec relative col-span-6">
-                                    <div className="label-section mb-1">
-                                    <p className='text-BusinessFormLabel'>Select City (Optional)</p>
+                                <div className="single-form-section-business business-basic-details overflow-hidden rounded-[15px] bg-white">
+                                    <div className="basic-details-heading py-[15px] px-6 border-b border-black border-opacity-20">
+                                    <h4 className='text-lg font-medium text-Secondary'>Basic Details</h4>
                                     </div>
-                                    <Select options={cities} 
-                                    placeholder='Choose City'
-                                    name='businessCity'
-                                    styles={{
-                                        control: (baseStyles, state) => ({
-                                            ...baseStyles,
-                                            borderRadius: 10,
-                                            paddingLeft: 8,
-                                            paddingTop: 4,
-                                            paddingBottom: 4,
-                                            borderWidth: 1,
-                                            outlineWidth: 0,
-                                            // borderColor: errors.businessCity ? '#FF4E4E' : '#B3B3B3',
-                                            fontSize: 16,
-                                            minWidth: '100%',
-                                            height: 50,
-                                            // borderColor: state.isFocused ? 'grey' : 'red',
-                                            boxShadow: state.isFocused ? 'none' : 'none',
-                                            
-                                        }),
-                                        }}
-                                    value={cities.find(option => option.value === values.businessCity)} 
-                                    onChange={(option) => { console.log(option) , setFieldValue('businessCity', option ? option.value : '') , getPincodes(option.value)}}
-                                    />                               
-                                </div>
-                                <div className="form-inputsec relative col-span-12">
-                                    <div className="label-section mb-1">
-                                    <p className='text-BusinessFormLabel'>Complete Address (Optional)</p>
+                                    <div className="inner-fields-grid-outer-main p-6 grid grid-cols-12 gap-5">
+                                    <div className="form-inputsec relative col-span-4">
+                                        <div className="label-section mb-1">
+                                        <p className='text-BusinessFormLabel'>User Name (optional)</p>
+                                        </div>
+                                        <Field type="text" name="userName" placeholder='Enter User Name'
+                                            className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.userName && touched.userName ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                                        />                                
                                     </div>
-                                    <Field as="textarea" name="completeAddress" placeholder='Enter Complete Address'
-                                        className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 h-32 resize-none rounded-lg bg-white w-full text-Black  ${errors.completeAddress && touched.completeAddress ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
-                                    />                                
-                                </div>
-                                <div className="form-inputsec relative col-span-6">
-                                    <div className="label-section mb-1">
-                                    <p className='text-BusinessFormLabel'>Landmark (optional)</p>
+                                    <div className="form-inputsec relative col-span-8">
+                                        <div className="label-section mb-1">
+                                        <p className='text-BusinessFormLabel'>Business Name*</p>
+                                        </div>
+                                        <Field type="text" name="businessName" placeholder='Enter Business Name*'
+                                            className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.businessName && touched.businessName ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                                        />                                
                                     </div>
-                                    <Field type="text" name="landmark" placeholder='Enter Landmark '
-                                        className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.landmark && touched.landmark ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
-                                    />                                
-                                </div>
-                                <div className="form-inputsec relative col-span-6">
-                                    <div className="label-section mb-1">
-                                    <p className='text-BusinessFormLabel'>Pincode (Optional)</p>
+                                    <div className="form-inputsec relative col-span-12">
+                                        <div className="label-section mb-1">
+                                        <p className='text-BusinessFormLabel'>Business Title (optional)</p>
+                                        </div>
+                                        <Field type="text" name="businessTitle" placeholder='Enter Business Title (optional)'
+                                            className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black border-LoginFormBorder placeholder:text-Black`} 
+                                        />                                
                                     </div>
-                                    <Select options={pincodes} 
-                                    placeholder='Choose Pincode'
-                                    name='pincode'
-                                    styles={{
-                                        control: (baseStyles, state) => ({
-                                            ...baseStyles,
-                                            borderRadius: 10,
-                                            paddingLeft: 8,
-                                            paddingTop: 4,
-                                            paddingBottom: 4,
-                                            borderWidth: 1,
-                                            outlineWidth: 0,
-                                            // borderColor: errors.businessCity ? '#FF4E4E' : '#B3B3B3',
-                                            fontSize: 16,
-                                            minWidth: '100%',
-                                            height: 50,
-                                            // borderColor: state.isFocused ? 'grey' : 'red',
-                                            boxShadow: state.isFocused ? 'none' : 'none',
-                                            
-                                        }),
-                                        }}
-                                    value={pincodes.find(option => option.value === values.pincode)} 
-                                    onChange={(option) => setFieldValue('pincode', option ? option.value : '')}
-                                    />                                    
+                                    </div>
                                 </div>
+                                <div className="single-form-section-business business-basic-details overflow-hidden rounded-[15px] bg-white">
+                                    <div className="basic-details-heading py-[15px] px-6 border-b border-black border-opacity-20">
+                                    <h4 className='text-lg font-medium text-Secondary'>Contact Information</h4>
+                                    </div>
+                                    <div className="inner-fields-grid-outer-main p-6 grid grid-cols-12 gap-5">
+                                    <div className="form-inputsec relative col-span-6">
+                                        <div className="label-section mb-1">
+                                        <p className='text-BusinessFormLabel'>Mobile Number (optional)</p>
+                                        </div>
+                                        <Field type="tel" name="mobileNumber" placeholder='Enter Mobile Number' maxLength={10} onKeyPress={(e) => numbersOnly(e)}
+                                            className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.mobileNumber && touched.mobileNumber ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                                        />                                
+                                    </div>
+                                    <div className="form-inputsec relative col-span-6">
+                                        <div className="label-section mb-1">
+                                        <p className='text-BusinessFormLabel'>Email Address (optional)</p>
+                                        </div>
+                                        <Field type="email" name="email" placeholder='Enter Email Address'
+                                            className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.email && touched.email ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                                        />                                
+                                    </div>
+                                    <div className="form-inputsec relative col-span-12">
+                                        <div className="label-section mb-1">
+                                        <p className='text-BusinessFormLabel'>Social Media Links (optional)</p>
+                                        </div>
+                                        <div className="social-media-adding-section relative">
+                                        <Field type="text" name="socialMedia" placeholder='Enter Social Media Link' onKeyUp={(e) => setSocialMediaInput(e.target.value)} 
+                                            className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black ${errors.socialMedia  ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                                        />
+                                        <button type="button" onClick={addSocialMediaLink}  className='absolute social-media-adding-button top-1/2 right-1 py-2 px-8 rounded-lg bg-white text-Secondary'>Add Link</button>
+                                        </div>                                      
+                                    </div>
+                                    {socialMediaLinks.map((items , index) => {
+                                        return (
+                                        <div className="social-meida-links-displayer col-span-12">
+                                            <div className="left-side-link-icon flex items-center justify-between bg-LightGrayBg rounded-[5px] py-2 px-4">
+                                                <div className="text-link-icon-outer flex items-center gap-4">
+                                                <i className="ri-link text-lg text-Secondary"></i>
+                                                <div className="right-text">
+                                                    <p className='text-Secondary font-medium'>{items}</p>
+                                                </div>
+                                                </div>
+                                                <div className="remove-link-btn"><button type="button" onClick={() => removeSocialMediaLink(index)} className='w-6 h-6 rounded-full flex items-center justify-center bg-red-100'><i className="ri-close-large-line text-red-600"></i></button></div>
+                                            </div>
+                                        </div>
+                                        )
+                                    })}
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="single-form-section-business business-basic-details overflow-hidden rounded-[15px] bg-white">
-                                <div className="basic-details-heading py-[15px] px-6 border-b border-black border-opacity-20">
-                                <h4 className='text-lg font-medium text-Secondary'>Detailed Business Address</h4>
+                                <div className="single-form-section-business business-basic-details rounded-[15px] bg-white">
+                                    <div className="basic-details-heading py-[15px] px-6 border-b border-black border-opacity-20">
+                                    <h4 className='text-lg font-medium text-Secondary'>Address Information</h4>
+                                    </div>
+                                    <div className="inner-fields-grid-outer-main p-6 grid grid-cols-12 gap-5">
+                                    <div className="form-inputsec relative col-span-6">
+                                        <div className="label-section mb-1">
+                                        <p className='text-BusinessFormLabel'>Select Sate (Optional)</p>
+                                        </div>
+                                        <Select options={states} 
+                                        placeholder='Choose State'
+                                        name='businessState'
+                                        styles={{
+                                            control: (baseStyles, state) => ({
+                                                ...baseStyles,
+                                                borderRadius: 10,
+                                                paddingLeft: 8,
+                                                paddingTop: 4,
+                                                paddingBottom: 4,
+                                                borderWidth: 1,
+                                                outlineWidth: 0,
+                                                // borderColor: errors.businessState ? '#FF4E4E' : '#B3B3B3',
+                                                fontSize: 16,
+                                                minWidth: '100%',
+                                                height: 50,
+                                                // borderColor: state.isFocused ? 'grey' : 'red',
+                                                boxShadow: state.isFocused ? 'none' : 'none',
+                                                
+                                            }),
+                                            }}
+                                        value={states.find(option => option.value === values.businessState)} 
+                                        onChange={(option) => {setFieldValue('businessState', option ? option.value : '') , getCities(option.value)}}
+                                        
+                                        />                               
+                                    </div>
+                                    <div className="form-inputsec relative col-span-6">
+                                        <div className="label-section mb-1">
+                                        <p className='text-BusinessFormLabel'>Select City (Optional)</p>
+                                        </div>
+                                        <Select options={cities} 
+                                        placeholder='Choose City'
+                                        name='businessCity'
+                                        styles={{
+                                            control: (baseStyles, state) => ({
+                                                ...baseStyles,
+                                                borderRadius: 10,
+                                                paddingLeft: 8,
+                                                paddingTop: 4,
+                                                paddingBottom: 4,
+                                                borderWidth: 1,
+                                                outlineWidth: 0,
+                                                // borderColor: errors.businessCity ? '#FF4E4E' : '#B3B3B3',
+                                                fontSize: 16,
+                                                minWidth: '100%',
+                                                height: 50,
+                                                // borderColor: state.isFocused ? 'grey' : 'red',
+                                                boxShadow: state.isFocused ? 'none' : 'none',
+                                                
+                                            }),
+                                            }}
+                                        value={cities.find(option => option.value === values.businessCity)} 
+                                        onChange={(option) => {  setFieldValue('businessCity', option ? option.value : '') , getPincodes(option.value)}}
+                                        />                               
+                                    </div>
+                                    <div className="form-inputsec relative col-span-12">
+                                        <div className="label-section mb-1">
+                                        <p className='text-BusinessFormLabel'>Complete Address (Optional)</p>
+                                        </div>
+                                        <Field as="textarea" name="completeAddress" placeholder='Enter Complete Address'
+                                            className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 h-32 resize-none rounded-lg bg-white w-full text-Black  ${errors.completeAddress && touched.completeAddress ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                                        />                                
+                                    </div>
+                                    <div className="form-inputsec relative col-span-6">
+                                        <div className="label-section mb-1">
+                                        <p className='text-BusinessFormLabel'>Landmark (optional)</p>
+                                        </div>
+                                        <Field type="text" name="landmark" placeholder='Enter Landmark '
+                                            className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.landmark && touched.landmark ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                                        />                                
+                                    </div>
+                                    <div className="form-inputsec relative col-span-6">
+                                        <div className="label-section mb-1">
+                                        <p className='text-BusinessFormLabel'>Pincode (Optional)</p>
+                                        </div>
+                                        <Select options={pincodes} 
+                                        placeholder='Choose Pincode'
+                                        name='pincode'
+                                        styles={{
+                                            control: (baseStyles, state) => ({
+                                                ...baseStyles,
+                                                borderRadius: 10,
+                                                paddingLeft: 8,
+                                                paddingTop: 4,
+                                                paddingBottom: 4,
+                                                borderWidth: 1,
+                                                outlineWidth: 0,
+                                                // borderColor: errors.businessCity ? '#FF4E4E' : '#B3B3B3',
+                                                fontSize: 16,
+                                                minWidth: '100%',
+                                                height: 50,
+                                                // borderColor: state.isFocused ? 'grey' : 'red',
+                                                boxShadow: state.isFocused ? 'none' : 'none',
+                                                
+                                            }),
+                                            }}
+                                        value={pincodes.find(option => option.value === values.pincode)} 
+                                        onChange={(option) => setFieldValue('pincode', option ? option.value : '')}
+                                        />                                    
+                                    </div>
+                                    </div>
                                 </div>
-                                <div className="inner-fields-grid-outer-main p-6 ">
-                                {isLoaded && 
-                                    <>
-                                    <StandaloneSearchBox
-                                        onLoad={(ref) => inputRef.current = ref}
-                                        onPlacesChanged={handlePlacesChange}
+                                <div className="single-form-section-business business-basic-details overflow-hidden rounded-[15px] bg-white">
+                                    <div className="basic-details-heading py-[15px] px-6 border-b border-black border-opacity-20">
+                                    <h4 className='text-lg font-medium text-Secondary'>Detailed Business Address</h4>
+                                    </div>
+                                    <div className="inner-fields-grid-outer-main p-6 ">
+                                    {isLoaded && 
+                                        <>
+                                        <StandaloneSearchBox
+                                            onLoad={(ref) => inputRef.current = ref}
+                                            onPlacesChanged={handlePlacesChange}
+                                        >
+                                            <div className="google-search-map-input-sec relative">
+                                            <div className="left-map-icon absolute left-6 top-1/2">
+                                                <img src={MapIcon} className='w-6 h-6 object-contain' alt="" />
+                                            </div>
+                                            <input type="text" placeholder="Search for a place..." className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 pl-12 pr-5 py-3 rounded-lg bg-white w-full text-Black `} />
+                                            </div>
+                                        </StandaloneSearchBox>
+                                        <div className="google-map-section-business-form rounded-xl overflow-hidden mt-5">
+                                            <GoogleMap
+                                                mapContainerStyle={{ width: '100%', height: '300px' }}
+                                                center={mapCenter}
+                                                zoom={14}
+                                            >
+                                                {selectedLocation && <Marker position={selectedLocation} />}
+                                            </GoogleMap>
+                                        </div>
+                                        </>
+                                    }
+                                    </div>
+                                </div>
+                                <div className="single-form-section-business business-basic-details rounded-[15px] bg-white">
+                                    <div className="basic-details-heading py-[15px] px-6 border-b border-black border-opacity-20">
+                                    <h4 className='text-lg font-medium text-Secondary'>Business Information</h4>
+                                    </div>
+                                    <div className="inner-fields-grid-outer-main p-6 grid grid-cols-12 gap-5">
+                                    <div className="form-inputsec relative col-span-6">
+                                        <div className="label-section mb-1">
+                                        <p className='text-BusinessFormLabel'>Business Category (Optional)</p>
+                                        </div>
+                                        <div className="poitions-relative relative z-[9999999]">
+                                        <Select options={busCates} 
+                                          placeholder='Select Business Category'
+                                          name='businessCategory'
+                                          styles={{
+                                              control: (baseStyles, state) => ({
+                                                  ...baseStyles,
+                                                  borderRadius: 10,
+                                                  paddingLeft: 8,
+                                                  paddingTop: 4,
+                                                  paddingBottom: 4,
+                                                  borderWidth: 1,
+                                                  outlineWidth: 0,
+                                                  // borderColor: errors.businessCategory ? '#FF4E4E' : '#B3B3B3',
+                                                  fontSize: 16,
+                                                  minWidth: '100%',
+                                                  height: 50,
+                                                  // borderColor: state.isFocused ? 'grey' : 'red',
+                                                  boxShadow: state.isFocused ? 'none' : 'none',
+                                                  
+                                              }),
+                                              }}
+                                          value={busCates.find(option => option.value === values.businessCategory)} 
+                                          onChange={(option) => {setFieldValue('businessCategory', option ? option.value : '')}}
+                                        />    
+                                        </div>                             
+                                    </div>
+                                    <div className="form-inputsec relative col-span-6">
+                                        <div className="label-section mb-1">
+                                        <p className='text-BusinessFormLabel'>Yearly Turnover (Optional)</p>
+                                        </div>
+                                        <Field type="text" name="yearlyTurnOver" placeholder='Enter Yearly Turnover'
+                                            className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.yearlyTurnOver && touched.yearlyTurnOver ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                                        />
+                                    </div>
+                                    <div className="form-inputsec relative col-span-6">
+                                        <div className="label-section mb-1">
+                                        <p className='text-BusinessFormLabel'>Number of Employees (Optional)</p>
+                                        </div>
+                                        <Field type="number" name="noOfEmployees" placeholder='Enter Number of Employees'
+                                            className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.noOfEmployees && touched.noOfEmployees ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                                        />                                
+                                    </div>
+                                    <div className="form-inputsec relative col-span-6">
+                                        <div className="label-section mb-1">
+                                        <p className='text-BusinessFormLabel'>Year of Establishment (Optional)</p>
+                                        </div>
+                                        <Field type="text" name="yearOfEstablishment" placeholder='Enter Year of Establishment '
+                                            className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.yearOfEstablishment && touched.yearOfEstablishment ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                                        />                                
+                                    </div>
+                                    <div className="form-inputsec relative col-span-6">
+                                        <div className="label-section mb-1">
+                                        <p className='text-BusinessFormLabel'>Website Address(optional)</p>
+                                        </div>
+                                        <Field type="text" name="websiteAddress" placeholder='Enter Website URL '
+                                            className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.websiteAddress && touched.websiteAddress ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                                        />                                
+                                    </div>
+                                    <div className="form-inputsec relative col-span-6">
+                                        <div className="label-section mb-1">
+                                        <p className='text-BusinessFormLabel'>GST Number(optional)</p>
+                                        </div>
+                                        <Field type="text" name="GSTNumber" placeholder='Enter GST Number '
+                                            className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.GSTNumber && touched.GSTNumber ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                                        />                                
+                                    </div>
+                                    <div className="form-inputsec relative col-span-6">
+                                        <div className="label-section mb-1">
+                                        <p className='text-BusinessFormLabel'>Business Registration Documents (optional)</p>
+                                        </div>
+                                        <div className="file-upload-outer-section-custom bg-ProfileScreensBg rounded-10p overflow-hidden relative h-50p">
+                                            <input type="file" name="" id="" onChange={(e) => handleBusinessDocFile(e)} className={`h-full w-full opacity-0 relative z-10 cursor-pointer ${businessDoc ? 'hidden' : 'block'}`}/>
+                                            {businessDoc ? 
+                                            <div className="inner-file-upload-butifier absolute top-1/2 left-1/2 w-full flex items-center px-5 gap-x-5 justify-between">
+                                                <p className='text-Black'>{businessDoc?.name}</p>
+                                                <button type="button" onClick={() => setBusinessDoc('')} className='w-7 h-7 bg-white rounded-full flex items-center justify-center'><i className="ri-close-large-fill text-red-500"></i></button>
+                                            </div> : 
+                                            <div className="inner-file-upload-butifier absolute top-1/2 left-1/2 w-full flex items-center px-5 gap-x-5">
+                                                <img src={FileUploadIcon} className='w-7 h-7' alt="" />
+                                                <p className='text-Black'>Click to Upload Registration document</p>
+                                            </div>
+                                            }
+                                        </div>                             
+                                    </div>
+                                    <div className="form-inputsec relative col-span-6">
+                                        <div className="label-section mb-1">
+                                        <p className='text-BusinessFormLabel'>Amenities (Optional)</p>
+                                        </div>
+                                        <Select options={busAmenities} 
+                                          placeholder='Select Amenities'
+                                          isMulti
+                                          components={animatedComponents}
+                                          closeMenuOnSelect={false}
+                                          styles={{
+                                              control: (baseStyles, state) => ({
+                                                  ...baseStyles,
+                                                  borderRadius: 10,
+                                                  paddingLeft: 8,
+                                                  paddingTop: 4,
+                                                  paddingBottom: 4,
+                                                  borderWidth: 1,
+                                                  outlineWidth: 0,
+                                                  borderColor: '#B3B3B3',
+                                                  fontSize: 16,
+                                                  minWidth: '100%',
+                                                  minHeight: 50,
+                                                  // borderColor: state.isFocused ? 'grey' : 'red',
+                                                  boxShadow: state.isFocused ? 'none' : 'none',
+                                              }),
+                                              }}
+                                          value={amenitiesArray || multiAmentites}
+                                          onChange={(option) => setMultiAmenities(option)}
+                                        />                               
+                                    </div>
+                                    <div className="form-inputsec relative col-span-6">
+                                        <div className="label-section mb-1">
+                                        <p className='text-BusinessFormLabel'>Working Hours (Optional)</p>
+                                        </div>
+                                        <Select options={workingHours} 
+                                        placeholder='Select Working Hours'
+                                        name='workingHours'
+                                        styles={{
+                                            control: (baseStyles, state) => ({
+                                                ...baseStyles,
+                                                borderRadius: 10,
+                                                paddingLeft: 8,
+                                                paddingTop: 4,
+                                                paddingBottom: 4,
+                                                borderWidth: 1,
+                                                outlineWidth: 0,
+                                                // borderColor: errors.workingHours ? '#FF4E4E' : '#B3B3B3',
+                                                fontSize: 16,
+                                                minWidth: '100%',
+                                                minHeight: 50,
+                                                // borderColor: state.isFocused ? 'grey' : 'red',
+                                                boxShadow: state.isFocused ? 'none' : 'none',
+                                            }),
+                                            }}
+                                        value={workingHours.find(option => option.value === values.workingHours)} 
+                                        onChange={(option) => setFieldValue('workingHours', option ? option.value : '')}
+                                        />                               
+                                    </div>
+                                    <div className="form-inputsec relative col-span-6">
+                                        <div className="label-section mb-1">
+                                        <p className='text-BusinessFormLabel'>Services Offered (Optional)</p>
+                                        </div>
+                                        <Select options={servicesOffered} 
+                                        placeholder='Select Services Offered'
+                                        styles={{
+                                            control: (baseStyles, state) => ({
+                                                ...baseStyles,
+                                                borderRadius: 10,
+                                                paddingLeft: 8,
+                                                paddingTop: 4,
+                                                paddingBottom: 4,
+                                                borderWidth: 1,
+                                                outlineWidth: 0,
+                                                // borderColor: errors.servicesOffer ? '#FF4E4E' : '#B3B3B3',
+                                                fontSize: 16,
+                                                minWidth: '100%',
+                                                minHeight: 50,
+                                                // borderColor: state.isFocused ? 'grey' : 'red',
+                                                boxShadow: state.isFocused ? 'none' : 'none',
+                                            }),
+                                            }}
+                                        value={servicesOffered.find(option => option.value === values.servicesOffer)} 
+                                        onChange={(option) => setFieldValue('servicesOffer', option ? option.value : '')}
+                                        />                               
+                                    </div>
+                                    </div>
+                                </div>
+                                <div className="bottom-form-submitter col-span-5  overflow-hidden relative group ">
+                                    <button
+                                    type="button"
+                                    onClick={handleSubmit}
+                                    className="w-full py-5 px-4 rounded-xl text-white font-semibold text-xl h-full bg-Primary disabled:bg-opacity-35 "
                                     >
-                                        <div className="google-search-map-input-sec relative">
-                                        <div className="left-map-icon absolute left-6 top-1/2">
-                                            <img src={MapIcon} className='w-6 h-6 object-contain' alt="" />
-                                        </div>
-                                        <input type="text" placeholder="Search for a place..." className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 pl-12 pr-5 py-3 rounded-lg bg-white w-full text-Black `} />
-                                        </div>
-                                    </StandaloneSearchBox>
-                                    <div className="google-map-section-business-form rounded-xl overflow-hidden mt-5">
-                                        <GoogleMap
-                                            mapContainerStyle={{ width: '100%', height: '300px' }}
-                                            center={mapCenter}
-                                            zoom={14}
-                                        >
-                                            {selectedLocation && <Marker position={selectedLocation} />}
-                                        </GoogleMap>
-                                    </div>
-                                    </>
-                                }
-                                </div>
-                            </div>
-                            <div className="single-form-section-business business-basic-details rounded-[15px] bg-white">
-                                <div className="basic-details-heading py-[15px] px-6 border-b border-black border-opacity-20">
-                                <h4 className='text-lg font-medium text-Secondary'>Business Information</h4>
-                                </div>
-                                <div className="inner-fields-grid-outer-main p-6 grid grid-cols-12 gap-5">
-                                <div className="form-inputsec relative col-span-6">
-                                    <div className="label-section mb-1">
-                                    <p className='text-BusinessFormLabel'>Business Category (Optional)</p>
-                                    </div>
-                                    <div className="poitions-relative relative z-[9999999]">
-                                    <Select options={busCates} 
-                                      placeholder='Select Business Category'
-                                      name='businessCategory'
-                                      styles={{
-                                          control: (baseStyles, state) => ({
-                                              ...baseStyles,
-                                              borderRadius: 10,
-                                              paddingLeft: 8,
-                                              paddingTop: 4,
-                                              paddingBottom: 4,
-                                              borderWidth: 1,
-                                              outlineWidth: 0,
-                                              // borderColor: errors.businessCategory ? '#FF4E4E' : '#B3B3B3',
-                                              fontSize: 16,
-                                              minWidth: '100%',
-                                              height: 50,
-                                              // borderColor: state.isFocused ? 'grey' : 'red',
-                                              boxShadow: state.isFocused ? 'none' : 'none',
-                                              
-                                          }),
-                                          }}
-                                      value={busCates.find(option => option.value === values.businessCategory)} 
-                                      onChange={(option) => {setFieldValue('businessCategory', option ? option.value : '')}}
-                                    />    
-                                    </div>                             
-                                </div>
-                                <div className="form-inputsec relative col-span-6">
-                                    <div className="label-section mb-1">
-                                    <p className='text-BusinessFormLabel'>Yearly Turnover (Optional)</p>
-                                    </div>
-                                    <Field type="text" name="yearlyTurnOver" placeholder='Enter Yearly Turnover'
-                                        className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.yearlyTurnOver && touched.yearlyTurnOver ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
-                                    />
-                                </div>
-                                <div className="form-inputsec relative col-span-6">
-                                    <div className="label-section mb-1">
-                                    <p className='text-BusinessFormLabel'>Number of Employees (Optional)</p>
-                                    </div>
-                                    <Field type="number" name="noOfEmployees" placeholder='Enter Number of Employees'
-                                        className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.noOfEmployees && touched.noOfEmployees ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
-                                    />                                
-                                </div>
-                                <div className="form-inputsec relative col-span-6">
-                                    <div className="label-section mb-1">
-                                    <p className='text-BusinessFormLabel'>Year of Establishment (Optional)</p>
-                                    </div>
-                                    <Field type="text" name="yearOfEstablishment" placeholder='Enter Year of Establishment '
-                                        className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.yearOfEstablishment && touched.yearOfEstablishment ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
-                                    />                                
-                                </div>
-                                <div className="form-inputsec relative col-span-6">
-                                    <div className="label-section mb-1">
-                                    <p className='text-BusinessFormLabel'>Website Address(optional)</p>
-                                    </div>
-                                    <Field type="text" name="websiteAddress" placeholder='Enter Website URL '
-                                        className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.websiteAddress && touched.websiteAddress ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
-                                    />                                
-                                </div>
-                                <div className="form-inputsec relative col-span-6">
-                                    <div className="label-section mb-1">
-                                    <p className='text-BusinessFormLabel'>GST Number(optional)</p>
-                                    </div>
-                                    <Field type="text" name="GSTNumber" placeholder='Enter GST Number '
-                                        className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black  ${errors.GSTNumber && touched.GSTNumber ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
-                                    />                                
-                                </div>
-                                <div className="form-inputsec relative col-span-6">
-                                    <div className="label-section mb-1">
-                                    <p className='text-BusinessFormLabel'>Business Registration Documents (optional)</p>
-                                    </div>
-                                    <div className="file-upload-outer-section-custom bg-ProfileScreensBg rounded-10p overflow-hidden relative h-50p">
-                                        <input type="file" name="" id="" onChange={(e) => handleBusinessDocFile(e)} className={`h-full w-full opacity-0 relative z-10 cursor-pointer ${businessDoc ? 'hidden' : 'block'}`}/>
-                                        {businessDoc ? 
-                                        <div className="inner-file-upload-butifier absolute top-1/2 left-1/2 w-full flex items-center px-5 gap-x-5 justify-between">
-                                            <p className='text-Black'>{businessDoc?.name}</p>
-                                            <button type="button" onClick={() => setBusinessDoc('')} className='w-7 h-7 bg-white rounded-full flex items-center justify-center'><i className="ri-close-large-fill text-red-500"></i></button>
-                                        </div> : 
-                                        <div className="inner-file-upload-butifier absolute top-1/2 left-1/2 w-full flex items-center px-5 gap-x-5">
-                                            <img src={FileUploadIcon} className='w-7 h-7' alt="" />
-                                            <p className='text-Black'>Click to Upload Registration document</p>
-                                        </div>
-                                        }
-                                    </div>                             
-                                </div>
-                                <div className="form-inputsec relative col-span-6">
-                                    <div className="label-section mb-1">
-                                    <p className='text-BusinessFormLabel'>Amenities (Optional)</p>
-                                    </div>
-                                    <Select options={busAmenities} 
-                                      placeholder='Select Amenities'
-                                      isMulti
-                                      components={animatedComponents}
-                                      closeMenuOnSelect={false}
-                                      styles={{
-                                          control: (baseStyles, state) => ({
-                                              ...baseStyles,
-                                              borderRadius: 10,
-                                              paddingLeft: 8,
-                                              paddingTop: 4,
-                                              paddingBottom: 4,
-                                              borderWidth: 1,
-                                              outlineWidth: 0,
-                                              borderColor: '#B3B3B3',
-                                              fontSize: 16,
-                                              minWidth: '100%',
-                                              minHeight: 50,
-                                              // borderColor: state.isFocused ? 'grey' : 'red',
-                                              boxShadow: state.isFocused ? 'none' : 'none',
-                                          }),
-                                          }}
-                                      value={amenitiesArray || multiAmentites}
-                                      onChange={(option) => setMultiAmenities(option)}
-                                    />                               
-                                </div>
-                                <div className="form-inputsec relative col-span-6">
-                                    <div className="label-section mb-1">
-                                    <p className='text-BusinessFormLabel'>Working Hours (Optional)</p>
-                                    </div>
-                                    <Select options={workingHours} 
-                                    placeholder='Select Working Hours'
-                                    name='workingHours'
-                                    styles={{
-                                        control: (baseStyles, state) => ({
-                                            ...baseStyles,
-                                            borderRadius: 10,
-                                            paddingLeft: 8,
-                                            paddingTop: 4,
-                                            paddingBottom: 4,
-                                            borderWidth: 1,
-                                            outlineWidth: 0,
-                                            // borderColor: errors.workingHours ? '#FF4E4E' : '#B3B3B3',
-                                            fontSize: 16,
-                                            minWidth: '100%',
-                                            minHeight: 50,
-                                            // borderColor: state.isFocused ? 'grey' : 'red',
-                                            boxShadow: state.isFocused ? 'none' : 'none',
-                                        }),
-                                        }}
-                                    value={workingHours.find(option => option.value === values.workingHours)} 
-                                    onChange={(option) => setFieldValue('workingHours', option ? option.value : '')}
-                                    />                               
-                                </div>
-                                <div className="form-inputsec relative col-span-6">
-                                    <div className="label-section mb-1">
-                                    <p className='text-BusinessFormLabel'>Services Offered (Optional)</p>
-                                    </div>
-                                    <Select options={servicesOffered} 
-                                    placeholder='Select Services Offered'
-                                    styles={{
-                                        control: (baseStyles, state) => ({
-                                            ...baseStyles,
-                                            borderRadius: 10,
-                                            paddingLeft: 8,
-                                            paddingTop: 4,
-                                            paddingBottom: 4,
-                                            borderWidth: 1,
-                                            outlineWidth: 0,
-                                            // borderColor: errors.servicesOffer ? '#FF4E4E' : '#B3B3B3',
-                                            fontSize: 16,
-                                            minWidth: '100%',
-                                            minHeight: 50,
-                                            // borderColor: state.isFocused ? 'grey' : 'red',
-                                            boxShadow: state.isFocused ? 'none' : 'none',
-                                        }),
-                                        }}
-                                    value={servicesOffered.find(option => option.value === values.servicesOffer)} 
-                                    onChange={(option) => setFieldValue('servicesOffer', option ? option.value : '')}
-                                    />                               
+                                    Submit Business Listing
+                                    </button>
                                 </div>
                                 </div>
-                            </div>
-                            <div className="bottom-form-submitter col-span-5  overflow-hidden relative group ">
-                                <button
-                                type="button"
-                                onClick={handleSubmit}
-                                className="w-full py-5 px-4 rounded-xl text-white font-semibold text-xl h-full bg-Primary disabled:bg-opacity-35 "
-                                >
-                                Submit Business Listing
-                                </button>
-                            </div>
-                            </div>
-                        </Form>
-                        )}
-                    </Formik>
+                            </Form>
+                            )}
+                        </Formik>
+                        </div>
                     </div>
-                </div>
-                </div>
-            </div>
+                  </div>
+              </div>
             </div>
         </div>
     </div> :
     <div className="main-business-detail bg-DashboardGray ">
+      <Modal
+          isOpen={shareModalOpen}
+          style={customStyles2}
+          contentLabel="Example Modal"
+      >
+        <div className="share-modal-inner">
+          <div className="top-share-modal-closer flex items-center justify-between mb-6">
+            <h2 className="text-xl font-medium text-Black">Share this place</h2>
+            <button type="button" onClick={() => setShareModalOpen(false)}><i className="bi bi-x-lg text-2xl"></i></button>
+          </div>
+          <div className="inner-content-share">
+            <div className="share-copy-link-bar flex items-center justify-between gap-4 bg-LightGrayBg rounded-xl px-5 py-3">
+              <div className="left-copy-link-bar">
+                  <h2 className="text-Secondary text-xl font-semibold mb-2">Copy Link</h2>
+                  <p className="text-sm opacity-50 font-light">https://admin-stage.localmart.app/business</p>
+              </div>
+              <div className="right-copy-link-button">
+                <button type="button" onClick={handleCopyToClipboard} className="w-10 h-10 rounded-full  bg-white flex items-center justify-center"><i className="ri-link text-2xl text-Secondary"></i></button>
+              </div>
+            </div>
+            <div className="bottom-social-options flex items-center justify-center gap-10 mt-8">
+              <div className="single-social-option">
+                <button type="button" className="w-10 h-10">
+                  <img src={FacebookShare} className="w-full h-full" alt="" />
+                </button>
+              </div>
+              <div className="single-social-option">
+                <button type="button" className="w-10 h-10">
+                  <img src={WhatsappShare} className="w-full h-full" alt="" />
+                </button>
+              </div>
+              <div className="single-social-option">
+                <button type="button" className="w-10 h-10">
+                  <img src={TelegramShare} className="w-full h-full" alt="" />
+                </button>
+              </div>
+              <div className="single-social-option">
+                <button type="button" className="w-10 h-10">
+                  <img src={InstagramShare} className="w-full h-full" alt="" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Modal>
       <div className="top-searched-detail-rating-favorite-sec sticky top-0 z-[9999] bg-white pl-[270px] py-4 pr-8  flex flex-wrap gap-y-6 items-center justify-between gap-x-5">
         <div className="left-title-rating-search ">
           <h4 className="text-2xl font-medium text-Black">
@@ -1227,7 +1304,7 @@ const BusinessDetails = () => {
                                   </div>
                                 </div>
                               </div>
-                            );
+                            )
                           })}
                         </div>
                       </div>
@@ -1292,6 +1369,7 @@ const BusinessDetails = () => {
                         <button
                           type="button"
                           className="share-place-btn flex items-center gap-x-3 text-left"
+                          onClick={() => setShareModalOpen(true)}
                         >
                           <i className="ri-share-fill text-lg text-Secondary"></i>
                           <p className="font-medium text-Secondary">

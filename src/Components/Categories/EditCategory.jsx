@@ -118,30 +118,31 @@ const EditCategory = () => {
     
         // console.log(categoriesData , "categories")
     
-      const handleAddCategory = async(values) => {
+      const handleUpdateCategory = async() => {
+
         const formData = new FormData();
-        formData.append("name" , categoryName);
-        formData.append("slug" , categoryName);
-        formData.append("parentCategoryId" , categorySelect)
-        formData.append("file" , categoryPic)
-    
+        formData.append("name" , categoryName ? categoryName : receivedCategory?.name);
+        formData.append("file" , categoryPic ? categoryPic : receivedCategory?.icon)
+        setModalIsOpen(true)
+        // console.log(formData )
     
         // console.log(formData , "lkjgklsdg")
         try {
-          await axios.post(`${config.api}business-category` , formData , {
+          await axios.put(`${config.api}business-category/${receivedCategory?._id}` , formData , {
             headers: {
               Authorization: `Bearer ${userToken}`,
             },
           })
           .then((response) => {
+            console.log(response)
             if(response?.data?.success == true) {
                 setModalIsOpen(false)
-                toast.success('Category Created Successfully');
-                console.log( 'user create values' , response);
+                toast.success('Category Updated Successfully');
+                // console.log( 'user create values' , response);
                 navigate('/categories')
             }else {
                 setModalIsOpen(false)
-                toast.error('Error Creating User');
+                toast.error('Error Updating Category');
             }
           })
           .catch((err) => {
@@ -177,9 +178,9 @@ const EditCategory = () => {
                </button>
                <div className="single-form-section-business business-basic-details  rounded-[15px] bg-white">
                  <div className="basic-details-heading py-[15px] px-6 border-b border-black border-opacity-20">
-                     <h4 className='text-lg font-medium text-Secondary'>Select a user to create a business</h4>
+                     <h4 className='text-lg font-medium text-Secondary'>Update Category</h4>
                  </div>
-                 <div className="inner-fields-grid-outer-main p-6 grid grid-cols-12 gap-5 items-end">  
+                 <div className="inner-fields-grid-outer-main p-6 grid grid-cols-12 gap-5 items-center">  
                    <div className="category-add-name col-span-2">
                      <p className='font-medium text-lg mb-4'>Category Image</p>
                      <div className="top-onclickprofile-pic  relative h-32 w-32 ">
@@ -192,7 +193,7 @@ const EditCategory = () => {
                    </div>
                    <div className="right-side-category-selection-parent-sub-parent col-span-10">
                        <div className="inner-category-selection grid grid-cols-12 gap-4">
-                         <div className="form-inputsec relative col-span-6">
+                         <div className="form-inputsec relative col-span-6 hidden">
                              <div className="label-section mb-1">
                                  <p className='text-BusinessFormLabel'>Select Category Type*</p>
                              </div>
@@ -221,7 +222,7 @@ const EditCategory = () => {
                                      onChange={(option) => setCategoryType(option)}
                              />                               
                          </div>
-                         <div className="form-inputsec relative col-span-6">
+                         <div className="form-inputsec relative col-span-6 hidden">
                              <div className="label-section mb-1">
                                  <p className='text-BusinessFormLabel'>Select Parent Category*</p>
                              </div>
@@ -251,14 +252,17 @@ const EditCategory = () => {
                                      onChange={(option) => { setCategorySelect(option?.value)}}
                              />                               
                          </div>
-                         <div className="user-adding-form-section col-span-12">
-                           <input type="text" onKeyUp={(e) => setCategoryName(e.target.value)} placeholder="Enter Category Name" className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 pl-6 pr-5 py-3 rounded-lg bg-white w-full text-Black `} />
+                         <div className="user-adding-form-section col-span-6">
+                            <div className="label-section mb-1">
+                                 <p className='text-BusinessFormLabel'>Enter Category Name</p>
+                             </div>
+                           <input type="text" onKeyUp={(e) => setCategoryName(e.target.value)} defaultValue={receivedCategory?.name} placeholder="Enter Category Name" className={`outline-none border border-Black border-opacity-30 focus:border-Secondary focus:bg-LightBlue duration-300 pl-6 pr-5 py-3 rounded-lg bg-white w-full text-Black `} />
                          </div>
                        </div>
                    </div>
                    
                    <div className="bottom-form-submitter col-span-12  overflow-hidden relative group ">
-                       <button type='button' onClick={handleAddCategory} disabled={!categoryPic || !categoryName}  className='w-full py-5 px-4 rounded-xl text-white font-semibold text-xl h-full bg-Primary disabled:bg-opacity-35 '>Add Category</button>
+                       <button type='button' onClick={handleUpdateCategory}  className='w-full py-3 px-4 rounded-xl text-white font-semibold text-xl h-full bg-Primary disabled:bg-opacity-35 '>Update Category</button>
                    </div>
                  </div>
                </div>
