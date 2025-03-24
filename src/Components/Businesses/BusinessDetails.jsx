@@ -576,92 +576,45 @@ const BusinessDetails = () => {
           name: 'Area or Locality',
           value: receivedData?.area
         }
-        //   {
-        //     "location": {
-        //       "type": "Point",
-        //       "coordinates": [
-        //         82.235025,
-        //         16.95507899999999
-        //       ]
-        //     },
-        //     "_id": "67e1735e25cf32846948a9b5",
-        //     "userId": {
-        //       "_id": "67bab40600bb1d142016300b",
-        //       "email": "erenjeager123@yopmail.com"
-        //     },
-        //     "userName": "Eren Jeager",
-        //     "name": "Extreme Drones",
-        //     "mobileNumber": "9494446464",
-        //     "email": "erenjeager123@yopmail.com",
-        //     "socialMediaLink": [
-        //       "https://www.exmaple.com"
-        //     ],
-        //     "categoryId": {
-        //       "_id": "67c88ceb44f9ae53ac382d0f",
-        //       "name": "Hospitals"
-        //     },
-        //     "yearlyTurnOver": 250000,
-        //     "noOfEmployees": 20,
-        //     "yearOfEstablishment": 2001,
-        //     "websiteAddress": "https://www.example.com",
-        //     "GSTNumber": "GSTIINLSFLKDG",
-        //     "registrationDocument": "",
-        //     "amenities": [
-        //       {
-        //         "_id": "67a87a903a30effcdc3b59f6",
-        //         "name": "Free Wi-Fi"
-        //       },
-        //       {
-        //         "_id": "67a87a9f3a30effcdc3b59f9",
-        //         "name": "Parking Facility"
-        //       },
-        //       {
-        //         "_id": "67a87aaf3a30effcdc3b59fc",
-        //         "name": "Air Conditioning"
-        //       },
-        //       {
-        //         "_id": "67a87ac03a30effcdc3b59ff",
-        //         "name": "Waiting Lounge"
-        //       }
-        //     ],
-        //     "servicesOffer": "B2B",
-        //     "stateId": {
-        //       "_id": "678daa989c4467c6aa4eeb89",
-        //       "name": "Andhra Pradesh"
-        //     },
-        //     "cityId": {
-        //       "_id": "678dab409c4467c6aa4eeb96",
-        //       "name": "Kakinada"
-        //     },
-        //     "completeAddress": "John Doe resides at 123 Maple Street, Apartment 4B, Springfield, Illinois, 62704. His home is located in a quiet neighborhood with easy access to local grocery stores, parks, and public transport. ",
-        //     "landmark": "Near Petrol Bunk",
-        //     "pincodeId": {
-        //       "_id": "678dacda9c4467c6aa4eeb97",
-        //       "code": "533001"
-        //     },
-        //     "workingHours": "10:00 AM - 6:00 PM 8Hrs",
-        //     "mediaFiles": [],
-        //     "services": [],
-        //     "ratings": 0,
-        //     "totalReviews": 0,
-        //     "isVerified": false,
-        //     "status": "in_review",
-        //     "tags": [
-        //       "tags"
-        //     ],
-        //     "area": "Surya Rao Peta , Kakinada",
-        //     "about": "Drones, also known as Unmanned Aerial Vehicles (UAVs), are flying robots controlled remotely or autonomously, used for various applications like surveillance, photography, delivery, and more",
-        //     "favorites": [],
-        //     "reviews": [],
-        //     "averageRating": 0,
-        //     "createdBy": "67b379ff87aeabd43a29bff9",
-        //     "createdAt": "2025-03-24T14:59:42.473Z",
-        //     "updatedAt": "2025-03-24T14:59:42.473Z",
-        //     "businessCode": "LMBIS-1000",
-        //     "__v": 0
-        //   }
-        // }
       ]
+
+      const handleUpdateBusinessStatus = async(key) => {
+
+        const formData = new FormData();
+        formData.append("status" , key);
+
+        console.log(formData)
+        setModalIsOpen(true)
+
+        try {
+          await axios.put(`${config.api}admin/business/${receivedData?._id}` , formData , {
+            headers: {
+              Authorization: `Bearer ${userToken}`,
+            },
+          })
+          .then((response) => {
+            console.log(response)
+            if(response?.data?.success == true) {
+                setModalIsOpen(false)
+                toast.success('Business Status Updated');
+                navigate('/business')
+            }else {
+                setModalIsOpen(false)
+                toast.error('Error in Updating Status');
+            }
+          })
+          .catch((err) => {
+            setModalIsOpen(false)
+            toast.error(err?.message);
+            toast.error(err?.response?.data?.message);
+            // console.log(err , 'error')
+          });
+        } catch (error) {
+          setModalIsOpen(false)
+          console.log(error)
+        }
+      }
+          
 
 
   return (
@@ -1250,8 +1203,8 @@ const BusinessDetails = () => {
         <div className="right-side-accept-reject-button-section">
             <div className="two-reviewing-buttons flex items-center gap-4">
                 <button type="button" className="bg-white border border-Secondary text-xl font-medium rounded-lg py-2 px-8 text-Secondary" onClick={() => setEditMode(true)}>Edit</button>
-                <button type="button" className="bg-green-500 text-xl font-semibold rounded-lg py-2 px-8 text-white">Publish</button>
-                <button type="button" className="bg-red-100 text-xl rounded-lg py-2 px-8 text-red-600">Reject</button>
+                <button type="button" className="bg-green-500 text-xl font-semibold rounded-lg py-2 px-8 text-white" onClick={() => handleUpdateBusinessStatus('published')}>Publish</button>
+                <button type="button" className="bg-red-100 text-xl rounded-lg py-2 px-8 text-red-600"  onClick={() => handleUpdateBusinessStatus('rejected')}>Reject</button>
             </div>
         </div>
       </div>
