@@ -55,6 +55,7 @@ const Businesses = () => {
       })
       .then(response => {
         // console.log(response , "response")
+        console.log(response , "response")
         setBusinessData(response?.data?.data)
         // setAllAddress(response?.data?.data)
       })
@@ -140,6 +141,7 @@ const Businesses = () => {
                               </div>
                               <div className="right-business-name">
                                 <p className='text-sm'>{items?.name} </p>
+                                <p className='text-xs'>{items?.businessCode ? items?.businessCode : null}</p>
                               </div>
                             </div>
                           </td>

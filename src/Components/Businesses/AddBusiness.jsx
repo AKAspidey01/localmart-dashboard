@@ -54,6 +54,10 @@ const AddBusiness = () => {
 
   const [socialMediaInput, setSocialMediaInput] = useState("");
   const [socialMediaLinks, setSocialMediaLinks] = useState([]);
+  const [customTagInput , setCustomTagInput] = useState('');
+  const [customTags , setCustomTags] = useState([]);
+  const [localityArea , setLocalityArea] = useState('');
+  const [localityCase2 , setLocalityCase2] = useState('')
 
 
 
@@ -222,9 +226,23 @@ const AddBusiness = () => {
       const lat = location.lat();
       const lng = location.lng();
 
+      
+      // Extract area/locality
+    let sublocality = "";
+    let locality = "";
+
+    places[0].address_components.forEach((component) => {
+      if (component.types.includes("sublocality_level_1")) {
+        sublocality = component.long_name
+      } else if (component.types.includes("locality")) {
+        locality = component.long_name
+      }
+    });
+
+    setLocalityArea(`${sublocality} , ${locality}`)
+
       setMapCenter({ lat, lng });
       setSelectedLocation({ lat, lng });
-      // console.log(`Selected Location: Latitude: ${lat}, Longitude: ${lng}`);
     }
   };
 
@@ -236,6 +254,7 @@ const AddBusiness = () => {
     businessState: "",
     businessCity: "",
     businessTitle: "",
+    aboutBusiness: "",
     businessCategory: "",
     mobileNumber: "",
     workingHours: "",
@@ -332,6 +351,15 @@ const AddBusiness = () => {
     );
   };
 
+  const addCustomTags = () => {
+    setCustomTags([...customTags, customTagInput]);
+    setSocialMediaInput(""); 
+  }
+
+  const removeBusinessTags = (index) => {
+    setCustomTags(customTags.filter((_, i) => i !== index));
+  };
+
   function numbersOnly(e) {
     var key = e.key;
     var regex = /[0-9]|\./;
@@ -347,8 +375,13 @@ const AddBusiness = () => {
     formData.append("userName", data.userName);
     formData.append("name", data.businessName);
     formData.append("title", data.businessTitle);
+    formData.append("about" , data.aboutBusiness);
     formData.append("mobileNumber", data.mobileNumber);
+    formData.append("area" , localityArea ? localityArea : localityCase2);
     formData.append("email", data.email);
+    customTags.forEach((items) => {
+      formData.append('tags' , items);
+    })
     socialMediaLinks.forEach((items) => {
       formData.append('socialMediaLink' , items);
     })
@@ -523,6 +556,14 @@ const AddBusiness = () => {
                                 </div>
                                 <Field type="text" name="businessTitle" placeholder='Enter Business Title (optional)'
                                     className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black border-LoginFormBorder placeholder:text-Black`} 
+                                />                                
+                              </div>
+                              <div className="form-inputsec relative col-span-12">
+                                <div className="label-section mb-1">
+                                  <p className='text-BusinessFormLabel'>About your business (Optional)</p>
+                                </div>
+                                <Field as="textarea" name="aboutBusiness" placeholder='Enter about your business'
+                                    className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 h-32 resize-none rounded-lg bg-white w-full text-Black  ${errors.aboutBusiness && touched.aboutBusiness ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
                                 />                                
                               </div>
                             </div>
@@ -714,6 +755,12 @@ const AddBusiness = () => {
                                         {selectedLocation && <Marker position={selectedLocation} />}
                                     </GoogleMap>
                                   </div>
+                                  <div className="area-field-section-inner mt-5">
+                                    <div className="top-label-section-area mb-1">
+                                      <p>Area or Locality</p>
+                                    </div>
+                                    <input type="text" value={localityArea ? localityArea : localityCase2} disabled placeholder="Search for a place..." className={`outline-none border border-Black border-opacity-30 focus:border-Secondary focus:bg-LightBlue duration-300 pl-6 pr-5 py-3 rounded-lg bg-white w-full text-Black `} />
+                                  </div>
                                 </>
                               }
                             </div>
@@ -723,37 +770,6 @@ const AddBusiness = () => {
                               <h4 className='text-lg font-medium text-Secondary'>Business Information</h4>
                             </div>
                             <div className="inner-fields-grid-outer-main p-6 grid grid-cols-12 gap-5">
-                              <div className="form-inputsec relative col-span-6">
-                                <div className="label-section mb-1">
-                                  <p className='text-BusinessFormLabel'>Business Category (Optional)</p>
-                                </div>
-                                <div className="poitions-relative relative z-[9999999]">
-                                <Select options={busCates} 
-                                  placeholder='Select Business Category'
-                                  name='businessCategory'
-                                  styles={{
-                                      control: (baseStyles, state) => ({
-                                        ...baseStyles,
-                                        borderRadius: 10,
-                                        paddingLeft: 8,
-                                        paddingTop: 4,
-                                        paddingBottom: 4,
-                                        borderWidth: 1,
-                                        outlineWidth: 0,
-                                        // borderColor: errors.businessCategory ? '#FF4E4E' : '#B3B3B3',
-                                        fontSize: 16,
-                                        minWidth: '100%',
-                                        height: 50,
-                                        // borderColor: state.isFocused ? 'grey' : 'red',
-                                        boxShadow: state.isFocused ? 'none' : 'none',
-                                        
-                                      }),
-                                    }}
-                                  value={busCates.find(option => option.value === values.businessCategory)} 
-                                  onChange={(option) => {setFieldValue('businessCategory', option ? option.value : '')}}
-                                />    
-                                </div>                             
-                              </div>
                               <div className="form-inputsec relative col-span-6">
                                 <div className="label-section mb-1">
                                   <p className='text-BusinessFormLabel'>Yearly Turnover (Optional)</p>
@@ -812,7 +828,7 @@ const AddBusiness = () => {
                                     }
                                 </div>                             
                               </div>
-                              <div className="form-inputsec relative col-span-6">
+                              <div className="form-inputsec relative col-span-12 z-[99999999]">
                                 <div className="label-section mb-1">
                                   <p className='text-BusinessFormLabel'>Amenities (Optional)</p>
                                 </div>
@@ -842,7 +858,7 @@ const AddBusiness = () => {
                                   onChange={(option) => setMultiAmenities(option)}
                                 />                               
                               </div>
-                              <div className="form-inputsec relative col-span-6">
+                              <div className="form-inputsec relative col-span-6 z-[9999999]">
                                 <div className="label-section mb-1">
                                   <p className='text-BusinessFormLabel'>Working Hours (Optional)</p>
                                 </div>
@@ -897,6 +913,66 @@ const AddBusiness = () => {
                                   onChange={(option) => setFieldValue('servicesOffer', option ? option.value : '')}
                                 />                               
                               </div>
+                              <div className="form-inputsec relative col-span-6">
+                                <div className="label-section mb-1">
+                                  <p className='text-BusinessFormLabel'>Business Category (Optional)</p>
+                                </div>
+                                <div className="poitions-relative relative ">
+                                <Select options={busCates} 
+                                  placeholder='Select Business Category'
+                                  name='businessCategory'
+                                  styles={{
+                                      control: (baseStyles, state) => ({
+                                        ...baseStyles,
+                                        borderRadius: 10,
+                                        paddingLeft: 8,
+                                        paddingTop: 4,
+                                        paddingBottom: 4,
+                                        borderWidth: 1,
+                                        outlineWidth: 0,
+                                        // borderColor: errors.businessCategory ? '#FF4E4E' : '#B3B3B3',
+                                        fontSize: 16,
+                                        minWidth: '100%',
+                                        height: 50,
+                                        // borderColor: state.isFocused ? 'grey' : 'red',
+                                        boxShadow: state.isFocused ? 'none' : 'none',
+                                        
+                                      }),
+                                    }}
+                                  value={busCates.find(option => option.value === values.businessCategory)} 
+                                  onChange={(option) => {setFieldValue('businessCategory', option ? option.value : '')}}
+                                />    
+                                </div>                             
+                              </div>
+                              <div className="form-inputsec relative col-span-6">
+                                <div className="label-section mb-1">
+                                  <p className='text-BusinessFormLabel'>Business Tags (optional)</p>
+                                </div>
+                                <div className="social-media-adding-section relative">
+                                  <Field type="text" name="businessTags" placeholder='Enter relevant business tags' onKeyUp={(e) => setCustomTagInput(e.target.value)} 
+                                      className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 px-5 py-3 rounded-lg bg-white w-full text-Black ${errors.socialMedia  ? 'border-red-500 border-opacity-100 bg-red-500 bg-opacity-10 placeholder:text-red-500 text-red-500' : 'text-Black border-LoginFormBorder placeholder:text-Black'}`} 
+                                  />
+                                  <button type="button" onClick={addCustomTags}  className='absolute social-media-adding-button top-1/2 right-1 py-2 px-8 rounded-lg bg-white text-Secondary border border-Black border-opacity-40'>Add</button>
+                                </div>                                      
+                              </div>
+                              {customTags.length > 0 ? 
+                              <div className="col-span-12">
+                                <div className="business-tags-section-grid-sec grid grid-cols-12 gap-4">
+                                  {customTags.map((items , index) => {
+                                    return (
+                                      <div className="social-meida-links-displayer col-span-3">
+                                        <div className="left-side-link-icon flex items-center justify-between bg-LightGrayBg bg-opacity-70 rounded-[8px] py-2 px-4">
+                                            <div className="right-text">
+                                                <p className='text-Secondary font-medium'>{items}</p>
+                                            </div>
+                                            <div className="remove-link-btn"><button type="button" onClick={() => removeBusinessTags(index)} className='w-6 h-6 rounded-full flex items-center justify-center bg-red-100'><i className="ri-close-large-line text-red-600"></i></button></div>
+                                        </div>
+                                      </div>
+                                    )
+                                  })}
+                                </div>
+                              </div> : null
+                              }
                             </div>
                           </div>
                           <div className="bottom-form-submitter col-span-5  overflow-hidden relative group ">

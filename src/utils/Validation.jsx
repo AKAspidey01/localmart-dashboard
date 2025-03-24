@@ -32,6 +32,7 @@ export const businessFormAddValidation = yup.object().shape({
     userName: yup.string().notRequired(''),
     businessName: yup.string().required('Please enter business name'),
     businessTitle: yup.string().notRequired(),
+    aboutBusiness:  yup.string().notRequired(),
     mobileNumber: yup.number().notRequired(),
     email: yup.string().email('Please Enter Valid Email').notRequired(''),
     socialMedia: yup.string().url().notRequired(),

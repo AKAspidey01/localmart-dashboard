@@ -47,7 +47,7 @@ const BusinessDetails = () => {
 
   const receivedData = location.state?.items || "";
 
-  // console.log("receivedData", receivedData);
+  console.log("receivedData", receivedData);
 
   const amenities = [
     {
@@ -534,6 +534,134 @@ const BusinessDetails = () => {
 
 
   
+
+      const businessDetailsAll = [
+        {
+          name: 'User Name',
+          value: receivedData?.userName
+        },
+        {
+          name: 'Mobile Number',
+          value: receivedData?.mobileNumber
+        },
+        {
+          name: 'Business Name',
+          value: receivedData?.name
+        },
+        {
+          name: 'Business Category',
+          value: receivedData?.categoryId?.name
+        },
+        {
+          name: 'Yearly Turnover',
+          value: receivedData?.yearlyTurnOver
+        },
+        {
+          name: 'Employees Size',
+          value: receivedData?.noOfEmployees
+        },
+        {
+          name: 'Year Of Establishment',
+          value: receivedData?.yearOfEstablishment
+        },
+        {
+          name: 'Gst Number',
+          value: receivedData?.GSTNumber
+        },
+        {
+          name: 'Submitted By',
+          value: receivedData?.userId?.email
+        },
+        {
+          name: 'Area or Locality',
+          value: receivedData?.area
+        }
+        //   {
+        //     "location": {
+        //       "type": "Point",
+        //       "coordinates": [
+        //         82.235025,
+        //         16.95507899999999
+        //       ]
+        //     },
+        //     "_id": "67e1735e25cf32846948a9b5",
+        //     "userId": {
+        //       "_id": "67bab40600bb1d142016300b",
+        //       "email": "erenjeager123@yopmail.com"
+        //     },
+        //     "userName": "Eren Jeager",
+        //     "name": "Extreme Drones",
+        //     "mobileNumber": "9494446464",
+        //     "email": "erenjeager123@yopmail.com",
+        //     "socialMediaLink": [
+        //       "https://www.exmaple.com"
+        //     ],
+        //     "categoryId": {
+        //       "_id": "67c88ceb44f9ae53ac382d0f",
+        //       "name": "Hospitals"
+        //     },
+        //     "yearlyTurnOver": 250000,
+        //     "noOfEmployees": 20,
+        //     "yearOfEstablishment": 2001,
+        //     "websiteAddress": "https://www.example.com",
+        //     "GSTNumber": "GSTIINLSFLKDG",
+        //     "registrationDocument": "",
+        //     "amenities": [
+        //       {
+        //         "_id": "67a87a903a30effcdc3b59f6",
+        //         "name": "Free Wi-Fi"
+        //       },
+        //       {
+        //         "_id": "67a87a9f3a30effcdc3b59f9",
+        //         "name": "Parking Facility"
+        //       },
+        //       {
+        //         "_id": "67a87aaf3a30effcdc3b59fc",
+        //         "name": "Air Conditioning"
+        //       },
+        //       {
+        //         "_id": "67a87ac03a30effcdc3b59ff",
+        //         "name": "Waiting Lounge"
+        //       }
+        //     ],
+        //     "servicesOffer": "B2B",
+        //     "stateId": {
+        //       "_id": "678daa989c4467c6aa4eeb89",
+        //       "name": "Andhra Pradesh"
+        //     },
+        //     "cityId": {
+        //       "_id": "678dab409c4467c6aa4eeb96",
+        //       "name": "Kakinada"
+        //     },
+        //     "completeAddress": "John Doe resides at 123 Maple Street, Apartment 4B, Springfield, Illinois, 62704. His home is located in a quiet neighborhood with easy access to local grocery stores, parks, and public transport. ",
+        //     "landmark": "Near Petrol Bunk",
+        //     "pincodeId": {
+        //       "_id": "678dacda9c4467c6aa4eeb97",
+        //       "code": "533001"
+        //     },
+        //     "workingHours": "10:00 AM - 6:00 PM 8Hrs",
+        //     "mediaFiles": [],
+        //     "services": [],
+        //     "ratings": 0,
+        //     "totalReviews": 0,
+        //     "isVerified": false,
+        //     "status": "in_review",
+        //     "tags": [
+        //       "tags"
+        //     ],
+        //     "area": "Surya Rao Peta , Kakinada",
+        //     "about": "Drones, also known as Unmanned Aerial Vehicles (UAVs), are flying robots controlled remotely or autonomously, used for various applications like surveillance, photography, delivery, and more",
+        //     "favorites": [],
+        //     "reviews": [],
+        //     "averageRating": 0,
+        //     "createdBy": "67b379ff87aeabd43a29bff9",
+        //     "createdAt": "2025-03-24T14:59:42.473Z",
+        //     "updatedAt": "2025-03-24T14:59:42.473Z",
+        //     "businessCode": "LMBIS-1000",
+        //     "__v": 0
+        //   }
+        // }
+      ]
 
 
   return (
@@ -1100,7 +1228,7 @@ const BusinessDetails = () => {
       <div className="top-searched-detail-rating-favorite-sec sticky top-0 z-[9999] bg-white pl-[270px] py-4 pr-8  flex flex-wrap gap-y-6 items-center justify-between gap-x-5">
         <div className="left-title-rating-search ">
           <h4 className="text-2xl font-medium text-Black">
-            {receivedData?.name}
+            {receivedData?.name} | {receivedData?.businessCode}
           </h4>
           <div className="location-rating-seperate-search flex items-center gap-x-5 mt-3 flex-wrap gap-y-3">
             <button
@@ -1192,15 +1320,44 @@ const BusinessDetails = () => {
                           About This Place
                         </h4>
                         <p className="text-Black opacity-70">
-                          Beautiful stylish and spacious 2-Bedroom, with 1 king
-                          and 1 queen size bed, and 1 free parking spot plus
-                          visitor parking. Located in one of the best areas of
-                          Downtown Toronto, just a few minutes walk from the CN
-                          tower, Rogers Stadium, Scotiabank Arena and the
-                          lakeshore. The apartment is surrounded by trendy
-                          restaurants, shops and venues. Close to public transit
-                          and main street{" "}
+                          {receivedData?.about ? receivedData?.about : 'Not Porvided'}
                         </p>
+                      </div>
+                      <div className="profile-information-details-bottom-part px-6 py-5 bg-white rounded-2xl ">
+                        <div className="left-sdie-profile-info-heading mb-4">
+                            <h4 className='text-lg font-medium text-Black'>Detailed Information</h4>
+                        </div>
+                        <div className="top-deskview-combined-details-section-profile">
+                            <div className="combined-details-screen-profile flex flex-wrap items-center gap-16  mt-3">
+                                {businessDetailsAll.map((items , index)=> {
+                                return (
+                                    <div className="single-detail-profile-sec" key={index}>
+                                        <p className='text-LightBlack opacity-50'>{items.name}</p>
+                                        <h6 className={`${items?.invalid ? 'text-red-400' : 'text-Black'}`}>{items.value}</h6>
+                                    </div>
+                                )
+                                })}
+                                <div className="single-detail-profile-sec" >
+                                    <p className='text-LightBlack opacity-50'>Website Address</p>
+                                    <a href={receivedData?.websiteAddress} target="_blank" className="text-Secondary">{receivedData?.websiteAddress}</a>
+                                </div>
+                            </div>
+                            <div className="business-tags-section mt-5">
+                              <h4 className='text-LightBlack opacity-50'>Business Tags</h4>
+                              <div className="inner-tags-section flex items-center flex-wrap gap-5 mt-2">
+                                  {receivedData?.tags?.length > 0 ? 
+                                        receivedData?.tags?.map((items , index) => {
+                                          return (
+                                            <div className="single-detail-profile-sec flex items-center gap-3 bg-gray-200 bg-opacity-60 rounded-xl py-2 px-4"  key={index}>
+                                              <i className="bi bi-tag-fill text-xl"></i>
+                                                <p  className="text-Secondary capitalize">{items}</p>
+                                            </div>
+                                          )
+                                        }) : null
+                                  }
+                              </div>
+                            </div>
+                        </div>
                       </div>
                       <div className="amenities-section-searched">
                         <h4 className="text-20 font-medium text-Black mb-3">
@@ -1266,7 +1423,7 @@ const BusinessDetails = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="rating-section-searched">
+                      <div className="rating-section-searched hidden">
                         <div className="rating-searched-section flex justify-between gap-10 items-center mb-4">
                           <div className="rating-searched-heading">
                             <h4 className="text-20 font-medium text-Black">
@@ -1366,7 +1523,7 @@ const BusinessDetails = () => {
                             </span>
                           </p>
                         </div>
-                        <button
+                        {/* <button
                           type="button"
                           className="share-place-btn flex items-center gap-x-3 text-left"
                           onClick={() => setShareModalOpen(true)}
@@ -1375,7 +1532,7 @@ const BusinessDetails = () => {
                           <p className="font-medium text-Secondary">
                             Share this place
                           </p>
-                        </button>
+                        </button> */}
                       </div>
                     </div>
                   </div>
