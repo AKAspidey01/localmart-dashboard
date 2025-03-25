@@ -106,28 +106,28 @@ const BusinessDetails = () => {
 
   const businessPhotosNew = [
     {
-      image: singleBusiness?.mediaFiles[0] ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage,
+      image: singleBusiness?.mediaFiles?.length > 0 ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage,
     },
     {
-      image: singleBusiness?.mediaFiles[0] ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage,
+      image: singleBusiness?.mediaFiles?.length > 0 ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage,
     },
     {
-      image: singleBusiness?.mediaFiles[0] ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage,
+      image: singleBusiness?.mediaFiles?.length > 0 ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage,
     },
     {
-      image: singleBusiness?.mediaFiles[0] ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage,
+      image: singleBusiness?.mediaFiles?.length > 0 ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage,
     },
     {
-      image: singleBusiness?.mediaFiles[0] ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage,
+      image: singleBusiness?.mediaFiles?.length > 0 ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage,
     },
     {
-      image: singleBusiness?.mediaFiles[0] ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage,
+      image: singleBusiness?.mediaFiles?.length > 0 ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage,
     },
     {
-      image: singleBusiness?.mediaFiles[0] ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage,
+      image: singleBusiness?.mediaFiles?.length > 0 ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage,
     },
     {
-      image: singleBusiness?.mediaFiles[0] ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage,
+      image: singleBusiness?.mediaFiles?.length > 0 ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage,
     },
   ];
 
