@@ -379,10 +379,10 @@ const AddBusiness = () => {
     formData.append("mobileNumber", data.mobileNumber);
     formData.append("area" , localityArea ? localityArea : localityCase2);
     formData.append("email", data.email);
-    customTags.forEach((items) => {
+    customTags?.forEach((items) => {
       formData.append('tags' , items);
     })
-    socialMediaLinks.forEach((items) => {
+    socialMediaLinks?.forEach((items) => {
       formData.append('socialMediaLink' , items);
     })
     formData.append("categoryId", data.businessCategory);
@@ -391,7 +391,7 @@ const AddBusiness = () => {
     formData.append("yearOfEstablishment", data.yearOfEstablishment);
     formData.append("websiteAddress", data.websiteAddress);
     formData.append("GSTNumber", data.GSTNumber);
-    multiAmentites.forEach((amenities) => {
+    multiAmentites?.forEach((amenities) => {
       console.log(amenities);
       formData.append("amenities", amenities.value);
     });
