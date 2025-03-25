@@ -47,7 +47,47 @@ const BusinessDetails = () => {
 
   const receivedData = location.state?.items || "";
 
-  console.log("receivedData", receivedData);
+
+  const [businessDoc, setBusinessDoc] = useState();
+  const [multiAmentites, setMultiAmenities] = useState();
+  const [businessPhotos, setBusinessPhotos] = useState([]);
+  const [foodItemsArray, setFoodItemsArray] = useState([]);
+  const [mapCenter, setMapCenter] = useState({ lat: 17.0005, lng: 81.804 });
+  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [shareModalOpen , setShareModalOpen] = useState(false);
+
+  const [busCates, setBusCates] = useState([]);
+  const [busAmenities, setBusAmenities] = useState([]);
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [pincodes, setPincodes] = useState([]);
+
+  const [userToken, setUserToken] = useState("");
+  const [allUsers, setAllUsers] = useState([]);
+
+  const [socialMediaInput, setSocialMediaInput] = useState("");
+  const [socialMediaLinks, setSocialMediaLinks] = useState([]);
+
+  const [editMode , setEditMode] = useState(false);
+  const [singleBusiness , setSingleBusiness] = useState({});
+
+
+
+  useEffect(() => {
+    getAllCategories();
+    getAllAmenities();
+    getStates();
+    getUserDetails();
+  }, []);
+
+        
+  useEffect(() => {
+    getCities(singleBusiness?.state?._id)
+    getPincodes(singleBusiness?.pincode?._id)
+  }, []);
+
+  // console.log("receivedData", receivedData);
 
   const amenities = [
     {
@@ -66,35 +106,35 @@ const BusinessDetails = () => {
 
   const businessPhotosNew = [
     {
-      image: receivedData?.mediaFiles[0]?.fileUrl || EmptyImage,
+      image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage,
     },
     {
-      image: receivedData?.mediaFiles[1]?.fileUrl || EmptyImage,
+      image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage,
     },
     {
-      image: receivedData?.mediaFiles[0]?.fileUrl || EmptyImage,
+      image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage,
     },
     {
-      image: receivedData?.mediaFiles[1]?.fileUrl || EmptyImage,
+      image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage,
     },
     {
-      image: receivedData?.mediaFiles[0]?.fileUrl || EmptyImage,
+      image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage,
     },
     {
-      image: receivedData?.mediaFiles[1]?.fileUrl || EmptyImage,
+      image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage,
     },
     {
-      image: receivedData?.mediaFiles[0]?.fileUrl || EmptyImage,
+      image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage,
     },
     {
-      image: receivedData?.mediaFiles[1]?.fileUrl || EmptyImage,
+      image: singleBusiness?.mediaFiles ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage,
     },
   ];
 
-  const amenitiesArray =  receivedData?.amenities.map((item) => ({
-    value: item._id,
-    label: item.name, 
-  }));
+  // const amenitiesArray =  singleBusiness?.amenities.map((item) => ({
+  //   value: item._id,
+  //   label: item.name, 
+  // }));
 
   const foodItems = [
     {
@@ -119,8 +159,8 @@ const BusinessDetails = () => {
     },
   ];
 
-  const long = receivedData?.location?.coordinates[0];
-  const lat = receivedData?.location?.coordinates[1];
+  const long = singleBusiness?.location?.coordinates[0];
+  const lat = singleBusiness?.location?.coordinates[1];
 
   const openGoogleMaps = () => {
     const url = `https://www.google.com/maps?q=${lat},${long}`;
@@ -132,43 +172,7 @@ const BusinessDetails = () => {
 
   // -----------------------------------------------
 
-        const [businessDoc, setBusinessDoc] = useState();
-        const [multiAmentites, setMultiAmenities] = useState();
-        const [businessPhotos, setBusinessPhotos] = useState([]);
-        const [foodItemsArray, setFoodItemsArray] = useState([]);
-        const [mapCenter, setMapCenter] = useState({ lat: 17.0005, lng: 81.804 });
-        const [selectedLocation, setSelectedLocation] = useState(null);
-        const [modalIsOpen, setModalIsOpen] = useState(false);
-        const [shareModalOpen , setShareModalOpen] = useState(false);
-      
-        const [busCates, setBusCates] = useState([]);
-        const [busAmenities, setBusAmenities] = useState([]);
-        const [states, setStates] = useState([]);
-        const [cities, setCities] = useState([]);
-        const [pincodes, setPincodes] = useState([]);
-      
-        const [userToken, setUserToken] = useState("");
-        const [allUsers, setAllUsers] = useState([]);
-      
-        const [socialMediaInput, setSocialMediaInput] = useState("");
-        const [socialMediaLinks, setSocialMediaLinks] = useState([]);
 
-        const [editMode , setEditMode] = useState(false)
-      
-      
-      
-        useEffect(() => {
-          getAllCategories();
-          getAllAmenities();
-          getStates();
-          getUserDetails();
-        }, []);
-
-              
-        useEffect(() => {
-          getCities(receivedData?.stateId?._id)
-          getPincodes(receivedData?.pincodeId?._id)
-        }, []);
 
         const productLink = ``;
         const handleCopyToClipboard = () => {
@@ -186,7 +190,35 @@ const BusinessDetails = () => {
           const userParse = JSON.parse(response);
           setUserToken(userParse);
           getAllUsers(userParse);
+          getBusinessData(userParse)
         };
+
+
+
+        const getBusinessData = async(token) => {
+          setModalIsOpen(true)
+          try {
+            await axios.get(`${config.api}admin/business/${receivedData?._id}` , {
+              headers: {
+                  "Authorization": "Bearer " +  token ,
+                  "content-type": "application/json"
+              }
+          })
+          .then(response => {
+            console.log("response",response)
+            setModalIsOpen(false)
+            setSingleBusiness(response?.data?.data)
+          })
+          .catch((err) => {
+            setModalIsOpen(false)
+            console.log(err)
+          })
+          }catch (error) {
+            setModalIsOpen(false)
+            console.log(error)
+          }
+        }
+
       
         const customStyles = {
           content: {
@@ -579,7 +611,6 @@ const BusinessDetails = () => {
       ]
 
       const handleUpdateBusinessStatus = async(key) => {
-
         const formData = new FormData();
         formData.append("status" , key);
 
@@ -614,7 +645,8 @@ const BusinessDetails = () => {
           console.log(error)
         }
       }
-          
+
+
 
 
   return (
@@ -1051,7 +1083,7 @@ const BusinessDetails = () => {
                                                   boxShadow: state.isFocused ? 'none' : 'none',
                                               }),
                                               }}
-                                          value={amenitiesArray || multiAmentites}
+                                          value={ multiAmentites}
                                           onChange={(option) => setMultiAmenities(option)}
                                         />                               
                                     </div>
@@ -1133,6 +1165,13 @@ const BusinessDetails = () => {
         </div>
     </div> :
     <div className="main-business-detail bg-DashboardGray ">
+        <Modal
+            isOpen={modalIsOpen}
+            style={customStyles}
+            contentLabel="Example Modal"
+        >
+            <Loader />
+        </Modal>
       <Modal
           isOpen={shareModalOpen}
           style={customStyles2}
@@ -1181,7 +1220,7 @@ const BusinessDetails = () => {
       <div className="top-searched-detail-rating-favorite-sec sticky top-0 z-[9999] bg-white pl-[270px] py-4 pr-8  flex flex-wrap gap-y-6 items-center justify-between gap-x-5">
         <div className="left-title-rating-search ">
           <h4 className="text-2xl font-medium text-Black">
-            {receivedData?.name} | {receivedData?.businessCode}
+            {singleBusiness?.name} | {singleBusiness?.businessCode}
           </h4>
           <div className="location-rating-seperate-search flex items-center gap-x-5 mt-3 flex-wrap gap-y-3">
             <button
@@ -1190,7 +1229,7 @@ const BusinessDetails = () => {
             >
               <i className="ri-map-pin-line text-Black"></i>
               <p className="text-sm text-LightText">
-                {receivedData?.stateId?.name} - {receivedData?.cityId?.name}
+                {singleBusiness?.city?.name} - {singleBusiness?.city?.name}
               </p>
             </button>
             <div className="seperator-div h-5 w-[1px] bg-Black"></div>
@@ -1273,7 +1312,7 @@ const BusinessDetails = () => {
                           About This Place
                         </h4>
                         <p className="text-Black opacity-70">
-                          {receivedData?.about ? receivedData?.about : 'Not Porvided'}
+                          {singleBusiness?.about ? singleBusiness?.about : 'Not Porvided'}
                         </p>
                       </div>
                       <div className="profile-information-details-bottom-part px-6 py-5 bg-white rounded-2xl ">
@@ -1292,14 +1331,14 @@ const BusinessDetails = () => {
                                 })}
                                 <div className="single-detail-profile-sec" >
                                     <p className='text-LightBlack opacity-50'>Website Address</p>
-                                    <a href={receivedData?.websiteAddress} target="_blank" className="text-Secondary">{receivedData?.websiteAddress}</a>
+                                    <a href={singleBusiness?.websiteAddress} target="_blank" className="text-Secondary">{singleBusiness?.websiteAddress}</a>
                                 </div>
                             </div>
                             <div className="business-tags-section mt-5">
                               <h4 className='text-LightBlack opacity-50'>Business Tags</h4>
                               <div className="inner-tags-section flex items-center flex-wrap gap-5 mt-2">
-                                  {receivedData?.tags?.length > 0 ? 
-                                        receivedData?.tags?.map((items , index) => {
+                                  {singleBusiness?.tags?.length > 0 ? 
+                                        singleBusiness?.tags?.map((items , index) => {
                                           return (
                                             <div className="single-detail-profile-sec flex items-center gap-3 bg-gray-200 bg-opacity-60 rounded-xl py-2 px-4"  key={index}>
                                               <i className="bi bi-tag-fill text-xl"></i>
@@ -1317,9 +1356,9 @@ const BusinessDetails = () => {
                           Amenities
                         </h4>
                         <div className="amenities-mapped-section flex items-center gap-x-30p flex-wrap gap-y-4">
-                          {receivedData?.amenities &&
-                          receivedData?.amenities.length > 0
-                            ? receivedData?.amenities.map((items, index) => {
+                          {singleBusiness?.amenities &&
+                          singleBusiness?.amenities.length > 0
+                            ? singleBusiness?.amenities.map((items, index) => {
                                 return (
                                   <div
                                     className="single-amenities-searched"
@@ -1434,7 +1473,7 @@ const BusinessDetails = () => {
                         >
                           <i className="ri-phone-fill text-Secondary"></i>
                           <p className="font-medium text-Secondary">
-                            {receivedData?.mobileNumber}
+                            {singleBusiness?.mobileNumber}
                           </p>
                         </button>
                       </div>
@@ -1443,7 +1482,7 @@ const BusinessDetails = () => {
                           Address
                         </h4>
                         <p className="text-Black opacity-40">
-                          {receivedData?.completeAddress}
+                          {singleBusiness?.completeAddress}
                         </p>
                         <div className="directions-copy-address-btns flex items-center gap-x-5 justify-between mt-4">
                           <button
@@ -1472,7 +1511,7 @@ const BusinessDetails = () => {
                           <i className="ri-timer-line text-lg text-Secondary"></i>
                           <p className="font-medium text-Black">
                             <span className="text-Green">
-                              {receivedData?.workingHours}
+                              {singleBusiness?.workingHours}
                             </span>
                           </p>
                         </div>

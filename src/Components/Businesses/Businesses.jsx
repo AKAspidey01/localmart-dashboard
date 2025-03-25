@@ -55,7 +55,7 @@ const Businesses = () => {
       })
       .then(response => {
         // console.log(response , "response")
-        console.log(response , "response")
+        // console.log(response , "response")
         setBusinessData(response?.data?.data)
         // setAllAddress(response?.data?.data)
       })
@@ -173,7 +173,7 @@ const Businesses = () => {
                               <div className="delete-btn">
                                 <button type="button" className=''><img src={DeleteIcon} className='w-5 h-5' alt="" /></button>
                               </div> */}
-                              <p className={`text-sm font-medium ${items?.status == 'in_review' ? 'text-orange-500' : 'text-green-500'}`}>{items?.status == "in_review" ? 'In-Review' : 'Published'}</p>
+                              <p className={`text-sm font-medium ${items?.status == 'in_review' ? 'text-orange-500' : items?.status == 'published' ? 'text-green-500' : 'text-red-400'}`}>{items?.status == "in_review" ? 'In Review' : items?.status == 'published' ? 'Published' : 'Rejected'}</p>
                             </div>
                           </td>
                         </tr>
