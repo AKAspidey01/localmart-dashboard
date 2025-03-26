@@ -104,32 +104,32 @@ const BusinessDetails = () => {
     },
   ];
 
-  const businessPhotosNew = [
-    {
-      image: singleBusiness?.mediaFiles?.length > 0 ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage,
-    },
-    {
-      image: singleBusiness?.mediaFiles?.length > 0 ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage,
-    },
-    {
-      image: singleBusiness?.mediaFiles?.length > 0 ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage,
-    },
-    {
-      image: singleBusiness?.mediaFiles?.length > 0 ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage,
-    },
-    {
-      image: singleBusiness?.mediaFiles?.length > 0 ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage,
-    },
-    {
-      image: singleBusiness?.mediaFiles?.length > 0 ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage,
-    },
-    {
-      image: singleBusiness?.mediaFiles?.length > 0 ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage,
-    },
-    {
-      image: singleBusiness?.mediaFiles?.length > 0 ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage,
-    },
-  ];
+  // const businessPhotosNew = [
+  //   {
+  //     image: singleBusiness?.mediaFiles?.length > 0 ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage,
+  //   },
+  //   {
+  //     image: singleBusiness?.mediaFiles?.length > 0 ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage,
+  //   },
+  //   {
+  //     image: singleBusiness?.mediaFiles?.length > 0 ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage,
+  //   },
+  //   {
+  //     image: singleBusiness?.mediaFiles?.length > 0 ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage,
+  //   },
+  //   {
+  //     image: singleBusiness?.mediaFiles?.length > 0 ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage,
+  //   },
+  //   {
+  //     image: singleBusiness?.mediaFiles?.length > 0 ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage,
+  //   },
+  //   {
+  //     image: singleBusiness?.mediaFiles?.length > 0 ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage,
+  //   },
+  //   {
+  //     image: singleBusiness?.mediaFiles?.length > 0 ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage,
+  //   },
+  // ];
 
   // const amenitiesArray =  singleBusiness?.amenities.map((item) => ({
   //   value: item._id,
@@ -585,43 +585,51 @@ const BusinessDetails = () => {
       const businessDetailsAll = [
         {
           name: 'User Name',
-          value: receivedData?.userName
+          value: singleBusiness?.userName
         },
         {
           name: 'Mobile Number',
-          value: receivedData?.mobileNumber
+          value: singleBusiness?.mobileNumber
         },
         {
           name: 'Business Name',
-          value: receivedData?.name
+          value: singleBusiness?.name
         },
         {
           name: 'Business Category',
-          value: receivedData?.categoryId?.name
+          value: singleBusiness?.category?.name
         },
         {
           name: 'Yearly Turnover',
-          value: receivedData?.yearlyTurnOver
+          value: singleBusiness?.yearlyTurnOver
         },
         {
           name: 'Employees Size',
-          value: receivedData?.noOfEmployees
+          value: singleBusiness?.noOfEmployees
         },
         {
           name: 'Year Of Establishment',
-          value: receivedData?.yearOfEstablishment
+          value: singleBusiness?.yearOfEstablishment
         },
         {
           name: 'Gst Number',
-          value: receivedData?.GSTNumber
+          value: singleBusiness?.GSTNumber
         },
         {
           name: 'Submitted By',
-          value: receivedData?.userId?.email
+          value: singleBusiness?.userId?.email
         },
         {
           name: 'Area or Locality',
-          value: receivedData?.area
+          value: singleBusiness?.area
+        },
+        {
+          name: 'State',
+          value: singleBusiness?.state?.name
+        },
+        {
+          name: 'Pincode',
+          value: singleBusiness?.pincode?.code
         }
       ]
 
@@ -661,6 +669,7 @@ const BusinessDetails = () => {
         }
       }
 
+      console.log(singleBusiness , "single")
 
 
 
@@ -1180,13 +1189,13 @@ const BusinessDetails = () => {
         </div>
     </div> :
     <div className="main-business-detail bg-DashboardGray ">
-        <Modal
-            isOpen={modalIsOpen}
-            style={customStyles}
-            contentLabel="Example Modal"
-        >
-            <Loader />
-        </Modal>
+      <Modal
+          isOpen={modalIsOpen}
+          style={customStyles}
+          contentLabel="Example Modal"
+      >
+        <Loader />
+      </Modal>
       <Modal
           isOpen={shareModalOpen}
           style={customStyles2}
@@ -1358,10 +1367,6 @@ const BusinessDetails = () => {
                                     </div>
                                 )
                                 })}
-                                <div className="single-detail-profile-sec" >
-                                    <p className='text-LightBlack opacity-50'>Website Address</p>
-                                    <a href={singleBusiness?.websiteAddress} target="_blank" className="text-Secondary">{singleBusiness?.websiteAddress}</a>
-                                </div>
                             </div>
                             <div className="business-tags-section mt-5">
                               <h4 className='text-LightBlack opacity-50'>Business Tags</h4>
@@ -1377,6 +1382,32 @@ const BusinessDetails = () => {
                                         }) : null
                                   }
                               </div>
+                            </div>
+                        </div>
+                      </div>
+                      <div className="profile-information-details-bottom-part px-6 py-5 bg-white rounded-2xl ">
+                        <div className="left-sdie-profile-info-heading mb-4">
+                            <h4 className='text-lg font-medium text-Black'>Links and Websites</h4>
+                        </div>
+                        <div className="top-deskview-combined-details-section-profile">
+                            <div className="combined-details-screen-profile flex flex-col gap-10  mt-3">
+                                <div className="single-detail-profile-sec" >
+                                    <p className='text-LightBlack opacity-50'>Website Address</p>
+                                    <a href={singleBusiness?.websiteAddress} target="_blank" className="text-Secondary">{singleBusiness?.websiteAddress}</a>
+                                </div>
+                                
+                                <div className="single-detail-profile-sec" >
+                                    <p className='text-LightBlack opacity-50'>Social Media Link</p>
+                                    {singleBusiness?.socialMediaLink && singleBusiness?.socialMediaLink?.length > 0 ? 
+                                     singleBusiness?.socialMediaLink?.map((items , index) => {
+                                      return (
+                                        <div className="link-sepereator">
+                                          <a href={items} target="_blank" className="text-Secondary">{items}</a>    
+                                        </div>
+                                      )
+                                     }) : null
+                                    }                                    
+                                </div>
                             </div>
                         </div>
                       </div>
