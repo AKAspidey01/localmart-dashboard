@@ -9,6 +9,7 @@ import EmptyLoader from '../../assets/images/animated-logos/emptyastro.json';
 import EditIcon from '../../assets/images/edit-icon.svg';
 import DeleteIcon from '../../assets/images/delete-icon.svg';
 import { useNavigate } from 'react-router-dom';
+import DummyBusinessImage from '../../assets/images/dummy-business-image.png'
 
 const Dashboard = () => {
 
@@ -206,13 +207,13 @@ const Dashboard = () => {
               </thead>
                  <tbody>
                   {businessData && businessData.length > 0 ?  
-                    businessData.map((items , index) => {
+                    businessData?.slice(0,6)?.map((items , index) => {
                       return (
                         <tr className='hover:bg-Secondary hover:bg-opacity-5' key={index}>
                           <td>
                             <div className="business-name-sec flex items-center gap-x-4">
                               <div className="left-bus-image ">
-                                <img src={items?.mediaFiles[0]?.fileUrl} className='w-10 h-10 rounded-full' alt="" />
+                                <img src={items?.mediaFiles[0]?.fileUrl || DummyBusinessImage} className='w-10 h-10 rounded-full' alt="" />
                               </div>
                               <div className="right-business-name">
                                 <p className='text-sm'>{items?.name} </p>
@@ -221,7 +222,7 @@ const Dashboard = () => {
                           </td>
                           <td>
                             <div className="business-number-sec">
-                              <p className='text-sm'>{items?.mobileNumber}4</p>
+                              <p className={`text-sm ${items?.mobileNumber ? 'text-Black' : 'text-red-400'}`}>{items?.mobileNumber ? items?.mobileNumber : 'Not Provided'}</p>
                             </div>
                           </td>
                           <td>

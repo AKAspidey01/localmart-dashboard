@@ -11,12 +11,16 @@ import { config } from '../../env-services';
 import Lottie from 'lottie-react';
 import EmptyLoader from '../../assets/images/animated-logos/emptyastro.json'
 import DummyBusinessImage from '../../assets/images/dummy-business-image.png'
+import { useAuth } from '../../utils/AuthContext';
 
 
 
 const Businesses = () => {
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const { userRole } = useAuth();
+
+
 
   const [userToken , setUserToken] = useState('');
   const [businessData , setBusinessData] = useState([]);
@@ -89,7 +93,7 @@ const Businesses = () => {
 
     
     const fileredBusiness = businessData.filter(item =>
-      [item.name, item.userName, item.mobileNumber]
+      [item.name, item.userName, item.mobileNumber , item?.businessCode]
         .some(field => field?.toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
@@ -99,12 +103,13 @@ const Businesses = () => {
       <div className="inner-business-section pl-[270px] py-8 pr-8">
         <div className="top-business-heading flex items-center justify-between gap-x-10">
           <h2 className='text-3xl font-semibold'>Businesses</h2>
+          {userRole == 'admin' || userRole == 'technician' ? 
           <div className="right-business-add-button">
             <button type="button" className='bg-Primary rounded-lg flex items-center py-2 px-6 gap-x-2' onClick={() => navigate('/business/add-business')}>
               <i className="ri-add-fill text-white text-2xl"></i>
               <p className='text-xl font-medium  text-white'>Add Business</p>
             </button>
-          </div>
+          </div> : null }
         </div>
         <div className="middle-search-section mt-10 mb-3  ">
            <div className="form-inputsec relative w-[30%] ml-auto">
@@ -133,7 +138,11 @@ const Businesses = () => {
                   {businessData && fileredBusiness.length > 0 ?  
                     fileredBusiness.map((items , index) => {
                       return (
-                        <tr className='hover:bg-Secondary hover:bg-opacity-5 cursor-pointer' key={index} onClick={() => navigate(`/business/details`, { state: { items }})}>
+                        <tr className='hover:bg-Secondary hover:bg-opacity-5 cursor-pointer' key={index} onClick={() => {
+                          if (userRole === 'admin' || userRole === 'reviewer') {
+                            navigate(`/business/details`, { state: { items } });
+                          }
+                        }}>
                           <td>
                             <div className="business-name-sec flex items-center gap-x-4">
                               <div className="left-bus-image ">
@@ -147,7 +156,7 @@ const Businesses = () => {
                           </td>
                           <td>
                             <div className="business-number-sec">
-                              <p className='text-sm'>{items?.mobileNumber}4</p>
+                            <p className={`text-sm ${items?.mobileNumber ? 'text-Black' : 'text-red-400'}`}>{items?.mobileNumber ? items?.mobileNumber : 'Not Provided'}</p>
                             </div>
                           </td>
                           <td>

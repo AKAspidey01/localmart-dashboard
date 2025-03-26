@@ -565,6 +565,21 @@ const BusinessDetails = () => {
       
 
 
+      const emptyImageLoop = [
+        {
+          image: EmptyImage
+        },
+        {
+          image: EmptyImage
+        },
+        {
+          image: EmptyImage
+        },
+        {
+          image: EmptyImage
+        },
+      ]
+
   
 
       const businessDetailsAll = [
@@ -1241,7 +1256,7 @@ const BusinessDetails = () => {
         </div>
         <div className="right-side-accept-reject-button-section">
             <div className="two-reviewing-buttons flex items-center gap-4">
-                <button type="button" className="bg-white border border-Secondary text-xl font-medium rounded-lg py-2 px-8 text-Secondary" onClick={() => setEditMode(true)}>Edit</button>
+                {/* <button type="button" className="bg-white border border-Secondary text-xl font-medium rounded-lg py-2 px-8 text-Secondary" onClick={() => setEditMode(true)}>Edit</button> */}
                 <button type="button" className="bg-green-500 text-xl font-semibold rounded-lg py-2 px-8 text-white" onClick={() => handleUpdateBusinessStatus('published')}>Publish</button>
                 <button type="button" className="bg-red-100 text-xl rounded-lg py-2 px-8 text-red-600"  onClick={() => handleUpdateBusinessStatus('rejected')}>Reject</button>
             </div>
@@ -1274,7 +1289,20 @@ const BusinessDetails = () => {
                   }}
                   modules={[Autoplay, Navigation, Pagination]}
                 >
-                  {businessPhotosNew.map((items, index) => {
+                  {singleBusiness?.mediaFiles && singleBusiness?.mediaFiles.length > 0 ?  singleBusiness?.mediaFiles.map((items, index) => {
+                    return (
+                      <SwiperSlide key={index}>
+                        <div className="big-image-section-searched searched-image-sections h-[500px]">
+                          <img
+                            src={items?.fileUrl}
+                            className="h-[500px] object-cover flex"
+                            alt=""
+                          />
+                        </div>
+                      </SwiperSlide>
+                    )
+                  }) : 
+                  emptyImageLoop.map((items , index) => {
                     return (
                       <SwiperSlide key={index}>
                         <div className="big-image-section-searched searched-image-sections h-[500px]">
@@ -1285,8 +1313,9 @@ const BusinessDetails = () => {
                           />
                         </div>
                       </SwiperSlide>
-                    );
-                  })}
+                    )
+                  })
+                  }
                 </Swiper>
                 <button
                   type="button"
