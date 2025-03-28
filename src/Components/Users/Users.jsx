@@ -96,14 +96,14 @@ const Users = () => {
         .then((response) => {
           if(response?.data?.success == true) {
             setModalIsOpen(false)
-            setLoader(true)
+            setLoader(false)
             getAllUsers(userToken)
             toast.success('User Deleted Successfully');
           }
         }).catch((err) => {
           console.log(err);
           setModalIsOpen(false);
-          setLoader(true)
+          setLoader(false)
           toast.error('Error in Deleting User');
         })
     }
