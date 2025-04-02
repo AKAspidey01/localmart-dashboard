@@ -169,9 +169,9 @@ const Users = () => {
                   </div>
               </div>
           </div>
-          <div className="bottom-business-table-section">
-            <div className="inner-business-table-section bg-white rounded-xl overflow-hidden">
-              <table cellPadding={15} >
+          <div className="bottom-business-table-section overflow-hidden overflow-x-auto">
+            <div className="inner-business-table-section bg-white rounded-xl overflow-hidden w-[1234px]">
+              <table cellPadding={15} className=''>
                 <thead>
                   <tr>
                     <th className='text-left font-normal opacity-50'>Name</th>

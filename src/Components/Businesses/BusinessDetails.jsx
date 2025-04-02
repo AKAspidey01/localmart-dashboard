@@ -174,13 +174,7 @@ const BusinessDetails = () => {
 
 
 
-        const productLink = ``;
-        const handleCopyToClipboard = () => {
-          setShareModalOpen(false)
-          navigator.clipboard.writeText(productLink).then(() => {
-            toast.success("Link copied!");
-          });
-        };
+
         
       
         const getUserDetails = async () => {
@@ -671,6 +665,50 @@ const BusinessDetails = () => {
 
       console.log(singleBusiness , "single")
 
+
+      const formatDate = (isoString) => {
+        return new Date(isoString)
+          .toLocaleDateString("en-GB")
+          .replace(/\//g, "-");
+    };
+    
+
+    const productLink = `https://www.localmart.app/search/complete-details/${receivedData?._id}`;
+    const handleCopyToClipboard = () => {
+      setShareModalOpen(false)
+      navigator.clipboard.writeText(productLink).then(() => {
+        toast.success("Link copied!");
+      });
+    };
+
+
+    const shareLink = (platform) => {
+      const url = `https://www.localmart.app/search/complete-details/${receivedData?._id}`;
+      const encodedUrl = encodeURIComponent(url);
+    
+      let shareUrl = "";
+    
+      switch (platform) {
+        case "whatsapp":
+          shareUrl = `https://wa.me/?text=${encodedUrl}`;
+          break;
+        case "telegram":
+          shareUrl = `https://t.me/share/url?url=${encodedUrl}`;
+          break;
+        case "instagram":
+          shareUrl = `https://www.instagram.com/?url=${encodedUrl}`;
+          break;
+        case "facebook":
+          shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
+          break;
+        default:
+          alert("Invalid platform");
+          return;
+      }
+    
+      window.open(shareUrl, "_blank");
+    };
+    
 
 
   return (
@@ -1210,7 +1248,7 @@ const BusinessDetails = () => {
             <div className="share-copy-link-bar flex items-center justify-between gap-4 bg-LightGrayBg rounded-xl px-5 py-3">
               <div className="left-copy-link-bar">
                   <h2 className="text-Secondary text-xl font-semibold mb-2">Copy Link</h2>
-                  <p className="text-sm opacity-50 font-light">https://admin-stage.localmart.app/business</p>
+                  <p className="text-sm opacity-50 font-light">https://www.localmart.app/search/complete-details/{receivedData?._id}</p>
               </div>
               <div className="right-copy-link-button">
                 <button type="button" onClick={handleCopyToClipboard} className="w-10 h-10 rounded-full  bg-white flex items-center justify-center"><i className="ri-link text-2xl text-Secondary"></i></button>
@@ -1218,22 +1256,22 @@ const BusinessDetails = () => {
             </div>
             <div className="bottom-social-options flex items-center justify-center gap-10 mt-8">
               <div className="single-social-option">
-                <button type="button" className="w-10 h-10">
+                <button type="button" className="w-10 h-10" onClick={() => shareLink('facebook')}>
                   <img src={FacebookShare} className="w-full h-full" alt="" />
                 </button>
               </div>
               <div className="single-social-option">
-                <button type="button" className="w-10 h-10">
+                <button type="button" className="w-10 h-10" onClick={() => shareLink('whatsapp')}>
                   <img src={WhatsappShare} className="w-full h-full" alt="" />
                 </button>
               </div>
               <div className="single-social-option">
-                <button type="button" className="w-10 h-10">
+                <button type="button" className="w-10 h-10" onClick={() => shareLink('telegram')}>
                   <img src={TelegramShare} className="w-full h-full" alt="" />
                 </button>
               </div>
               <div className="single-social-option">
-                <button type="button" className="w-10 h-10">
+                <button type="button" className="w-10 h-10" onClick={() => shareLink('instagram')}>
                   <img src={InstagramShare} className="w-full h-full" alt="" />
                 </button>
               </div>
@@ -1259,7 +1297,7 @@ const BusinessDetails = () => {
             <div className="seperator-div h-5 w-[1px] bg-Black"></div>
             <div className="rating-review-search-text flex items-center gap-x-2">
               <i className="ri-star-fill text-StarGold"></i>
-              <p>1407+ Ratings</p>
+              <p>{singleBusiness?.averageRating}  Ratings</p>
             </div>
           </div>
         </div>
@@ -1475,7 +1513,7 @@ const BusinessDetails = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="rating-section-searched hidden">
+                      <div className="rating-section-searched ">
                         <div className="rating-searched-section flex justify-between gap-10 items-center mb-4">
                           <div className="rating-searched-heading">
                             <h4 className="text-20 font-medium text-Black">
@@ -1487,34 +1525,24 @@ const BusinessDetails = () => {
                           </div>
                         </div>
                         <div className="rating-searched-bottom-slider-section flex items-center flex-wrap gap-10">
-                          {foodItems.map((items, index) => {
-                            return (
-                              <div
-                                className="single-rating-profile flex items-center gap-x-2"
-                                key={index}
-                              >
-                                <div className="left-image-rating-pro">
-                                  <img
-                                    src={BusinessOwner}
-                                    className="max-w-[50px] max-h-[50px] rounded-full"
-                                    alt=""
-                                  />
-                                </div>
-                                <div className="right-text-rating-profile">
-                                  <h4 className="font-medium text-Black">
-                                    SM. Srinivas Kiran
-                                  </h4>
-                                  <div className="five-stars-section flex items-center gap-x-1">
-                                    <i className="ri-star-fill text-StarGold"></i>
-                                    <i className="ri-star-fill text-StarGold"></i>
-                                    <i className="ri-star-fill text-StarGold"></i>
-                                    <i className="ri-star-fill text-StarGold"></i>
-                                    <i className="ri-star-fill text-StarGold"></i>
+                            {singleBusiness?.reviews && singleBusiness?.reviews?.length > 0 ?  singleBusiness?.reviews?.map((items , index) => {
+                                return (
+                                  <div className="single-rating-profile col-span-6 bg-white rounded-2xl p-5" key={index}>
+                                  <div className="right-text-rating-profile mb-2">
+                                    <div className="five-stars-section flex items-center gap-x-1">
+                                      {[...Array(items.rating)].map((rates , rateIndex) => {
+                                        return (
+                                          <i className='ri-star-fill text-lg text-StarGold' key={rateIndex}></i>
+                                        )
+                                      })}
+                                    </div>
+                                    <h4 className='font-medium text-Black text-xl'>{items?.userName}</h4>
                                   </div>
-                                </div>
+                                  <p className="text-Black font-light opacity-60">{items?.comment ? items?.comment : 'Comments not added by user'}</p>
+                                  <p className="text-sm font-medium mt-2 opacity-50">Posted on : {formatDate(items?.createdAt)}</p>
                               </div>
-                            )
-                          })}
+                                )
+                            }) : null}
                         </div>
                       </div>
                     </div>
@@ -1575,7 +1603,7 @@ const BusinessDetails = () => {
                             </span>
                           </p>
                         </div>
-                        {/* <button
+                        <button
                           type="button"
                           className="share-place-btn flex items-center gap-x-3 text-left"
                           onClick={() => setShareModalOpen(true)}
@@ -1584,7 +1612,7 @@ const BusinessDetails = () => {
                           <p className="font-medium text-Secondary">
                             Share this place
                           </p>
-                        </button> */}
+                        </button>
                       </div>
                     </div>
                   </div>

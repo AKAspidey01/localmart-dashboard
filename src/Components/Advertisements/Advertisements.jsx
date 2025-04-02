@@ -124,7 +124,7 @@ const Advertisements = () => {
                           </td>
                           <td>
                             <div className="business-number-sec">
-                              <p className='text-sm'>{items?.mobileNumber}4</p>
+                              <p className='text-sm'>{items?.mobileNumber}</p>
                             </div>
                           </td>
                           <td>

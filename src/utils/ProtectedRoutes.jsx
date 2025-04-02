@@ -7,8 +7,8 @@ const ProtectedRoutes = () => {
     const location = useLocation()
 
     const rolePermissions = {
-        admin: ['/', '/business' ,  '/business/details' , '/categories/edit-category' ,  '/users/user-details' , '/business/add-business', '/business/add-photos', '/categories', '/categories/add-category', '/users', '/users/add-user', '/advertisements', '/advertisements/add-advertisements', '/cities', '/cities/add-cities', '/profile'],
-        technician: ['/' ,'/categories', '/categories/edit-category' , '/advertisements', '/cities', '/profile', '/business' , '/business/add-business', '/users/user-details' , '/users', '/users/add-user',],
+        admin: ['/', '/business' , '/business/details' , '/categories/edit-category' ,  '/users/user-details' , '/business/add-business', '/business/add-photos', '/categories', '/categories/add-category', '/users', '/users/add-user', '/advertisements', '/advertisements/add-advertisements', '/cities', '/cities/add-cities', '/profile'],
+        technician: ['/' ,'/categories', '/categories/edit-category' , '/advertisements', '/cities', '/profile', '/business' , '/business/add-business'],
         reviewer: ['/' ,'/business',  '/business/details' , '/profile']
     };
 

@@ -23,6 +23,7 @@ import { config } from "../../env-services";
 import { useLocation, useNavigate } from "react-router-dom";
 import Loader from "../../utils/Loader/Loader";
 import toast from "react-hot-toast";
+import { useAuth } from "../../utils/AuthContext";
 
 const animatedComponents = makeAnimated();
 
@@ -34,6 +35,8 @@ const AddBusiness = () => {
 
   const receivedMail = location.state?.readEmail || "";
   const receivedToken = location.state?.token || "";
+
+    const { userRole } = useAuth()
 
   const [businessDoc, setBusinessDoc] = useState();
   const [multiAmentites, setMultiAmenities] = useState();
@@ -518,6 +521,7 @@ const AddBusiness = () => {
                                   onChange={(option) => { setFieldValue( "userId", option ? option.value : "" );}}
                                 />
                               </div>
+                              {userRole === 'admin' ? 
                               <div className="right-create-business-for-new-user col-span-6">
                                 <div className="inner-create-new-user">
                                   <div className="bottom-form-submitter overflow-hidden relative group ">
@@ -532,7 +536,8 @@ const AddBusiness = () => {
                                     </button>
                                   </div>
                                 </div>
-                              </div>
+                              </div> 
+                            : null }
                             </div>
                           </div>
                           <div className="single-form-section-business business-basic-details overflow-hidden rounded-[15px] bg-white">
