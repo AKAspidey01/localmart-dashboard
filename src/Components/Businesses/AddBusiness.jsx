@@ -126,9 +126,15 @@ const AddBusiness = () => {
         },
       })
       .then((response) => {
-        // console.log(response , "All Users")
+        
+  console.log(response , "alUsers")
+
+
         if (response?.data?.data) {
-          const alignedUsers = response?.data?.data.map((item) => ({
+          const filteredUsers = response.data.data.filter(
+            (item) => item?.role?.name === "User"
+          );
+          const alignedUsers = filteredUsers.map((item) => ({
             value: item._id,
             label: item.email,
           }));
