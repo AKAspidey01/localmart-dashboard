@@ -34,6 +34,7 @@ import FacebookShare from "../../assets/images/facebook-share.svg";
 import InstagramShare from "../../assets/images/instagram-share.svg";
 import WhatsappShare from "../../assets/images/whatsapp-share.svg";
 import TelegramShare from "../../assets/images/telegram-share.svg";
+import { useAuth } from "../../utils/AuthContext";
 
 const animatedComponents = makeAnimated();
 
@@ -44,6 +45,7 @@ const BusinessDetails = () => {
   const location = useLocation();
 
   const receivedData = location.state?.items || "";
+  const { userRole } = useAuth()
 
   const [businessDoc, setBusinessDoc] = useState();
   const [multiAmentites, setMultiAmenities] = useState();
@@ -1322,7 +1324,7 @@ const BusinessDetails = () => {
                 {/* <button type="button" className="bg-white border border-Secondary text-xl font-medium rounded-lg py-2 px-8 text-Secondary" onClick={() => setEditMode(true)}>Edit</button> */}
                 <button type="button" className="bg-green-500 text-lg font-semibold rounded-lg py-2 px-6 border border-green-500 text-white" onClick={() => handleUpdateBusinessStatus('published')}>Publish</button>
                 <button type="button" className="bg-red-100 text-lg rounded-lg py-2 px-6 text-red-600 border border-red-100"  onClick={() => handleUpdateBusinessStatus('rejected')}>Reject</button>
-                <button type="button" className="text-lg rounded-lg py-2 px-6 text-red-600 border-red-600 border" onClick={() => setDeleteModal(true)} >Delete</button>
+                {userRole === "admin" ? <button type="button" className="text-lg rounded-lg py-2 px-6 text-red-600 border-red-600 border" onClick={() => setDeleteModal(true)} >Delete</button> : null}
             </div>
         </div>
       </div>
