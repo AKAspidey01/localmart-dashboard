@@ -22,6 +22,7 @@ import AddCities from './Components/Cities/AddCities'
 import BusinessDetails from './Components/Businesses/BusinessDetails'
 import UserDetails from './Components/Users/UserDetails'
 import EditCategory from './Components/Categories/EditCategory'
+import AdvertisementDetail from './Components/Advertisements/AdvertisementDetail'
 
 
 const Layout = () => {
@@ -42,6 +43,7 @@ const Layout = () => {
             <Route exact={true} Component={UserDetails} path='/users/user-details'/>
             <Route exact={true} Component={Advertisements} path='/advertisements'/>
             <Route exact={true} Component={AddAdvertisement} path='/advertisements/add-advertisements'/>
+            <Route exact={true} Component={AdvertisementDetail} path='/advertisements/add-details/:id'/>
             <Route exact={true} Component={Cities} path='/cities'/>
             <Route exact={true} Component={AddCities} path='/cities/add-cities'/>
             <Route exact={true} Component={Profile} path='/profile'/>

@@ -751,7 +751,7 @@ const AddBusiness = () => {
                                     onPlacesChanged={handlePlacesChange}
                                   >
                                     <div className="google-search-map-input-sec relative">
-                                      <div className="left-map-icon absolute left-6 top-1/2">
+                                      <div className="left-map-icon absolute left-4 top-1/2">
                                         <img src={MapIcon} className='w-6 h-6 object-contain' alt="" />
                                       </div>
                                       <input type="text" placeholder="Search for a place..." className={`outline-none border focus:border-Secondary focus:bg-LightBlue duration-300 pl-12 pr-5 py-3 rounded-lg bg-white w-full text-Black `} />

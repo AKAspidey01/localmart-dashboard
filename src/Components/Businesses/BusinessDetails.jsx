@@ -1,4 +1,4 @@
-import React, { useState, useEffect , useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import BusinessOwner from "../../assets/images/business-owner-pic.jpg";
 import GmailIcon from "../../assets/images/gmail-icon.svg";
 import VegIcon from "../../assets/images/veg-icon.svg";
@@ -16,37 +16,34 @@ import makeAnimated from "react-select/animated";
 import MapIcon from "../../assets/images/maps-icon-input.svg";
 import axios from "axios";
 import Modal from "react-modal";
-import { GoogleMap,  LoadScript,  Marker,  useJsApiLoader, StandaloneSearchBox,} from "@react-google-maps/api";
+import {
+  GoogleMap,
+  LoadScript,
+  Marker,
+  useJsApiLoader,
+  StandaloneSearchBox,
+} from "@react-google-maps/api";
 import { config } from "../../env-services";
 import { useLocation, useNavigate } from "react-router-dom";
 import Loader from "../../utils/Loader/Loader";
 import toast from "react-hot-toast";
-import EmptyImage from '../../assets/images/empty-image-bg.jpg';
-
-
-
+import EmptyImage from "../../assets/images/empty-image-bg.jpg";
 
 // Sharing-images
-import FacebookShare from '../../assets/images/facebook-share.svg';
-import InstagramShare from '../../assets/images/instagram-share.svg';
-import WhatsappShare from '../../assets/images/whatsapp-share.svg';
-import TelegramShare from '../../assets/images/telegram-share.svg';
-
+import FacebookShare from "../../assets/images/facebook-share.svg";
+import InstagramShare from "../../assets/images/instagram-share.svg";
+import WhatsappShare from "../../assets/images/whatsapp-share.svg";
+import TelegramShare from "../../assets/images/telegram-share.svg";
 
 const animatedComponents = makeAnimated();
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyCfHCytpE0Oq4tvXmCWaOl05iyH_OfLGuM";
 
-
-
 const BusinessDetails = () => {
-
-
   const navigate = useNavigate();
   const location = useLocation();
 
   const receivedData = location.state?.items || "";
-
 
   const [businessDoc, setBusinessDoc] = useState();
   const [multiAmentites, setMultiAmenities] = useState();
@@ -55,7 +52,7 @@ const BusinessDetails = () => {
   const [mapCenter, setMapCenter] = useState({ lat: 17.0005, lng: 81.804 });
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [shareModalOpen , setShareModalOpen] = useState(false);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
 
   const [busCates, setBusCates] = useState([]);
   const [busAmenities, setBusAmenities] = useState([]);
@@ -69,10 +66,11 @@ const BusinessDetails = () => {
   const [socialMediaInput, setSocialMediaInput] = useState("");
   const [socialMediaLinks, setSocialMediaLinks] = useState([]);
 
-  const [editMode , setEditMode] = useState(false);
-  const [singleBusiness , setSingleBusiness] = useState({});
-
-
+  const [editMode, setEditMode] = useState(false);
+  const [singleBusiness, setSingleBusiness] = useState({});
+  const [deletModal, setDeleteModal] = useState(false);
+  const [deletModalData, setDeleteModalData] = useState("");
+  const [deleteLoader, setDeleteLoader] = useState(false);
 
   useEffect(() => {
     getAllCategories();
@@ -81,60 +79,10 @@ const BusinessDetails = () => {
     getUserDetails();
   }, []);
 
-        
   useEffect(() => {
-    getCities(singleBusiness?.state?._id)
-    getPincodes(singleBusiness?.pincode?._id)
+    getCities(singleBusiness?.state?._id);
+    getPincodes(singleBusiness?.pincode?._id);
   }, []);
-
-  // console.log("receivedData", receivedData);
-
-  const amenities = [
-    {
-      icon: "ri-wifi-line",
-      title: "Free Wifi",
-    },
-    {
-      icon: "ri-snowflake-line",
-      title: "Air Conditioning",
-    },
-    {
-      icon: "ri-parking-box-line",
-      title: "Free Parking",
-    },
-  ];
-
-  // const businessPhotosNew = [
-  //   {
-  //     image: singleBusiness?.mediaFiles?.length > 0 ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage,
-  //   },
-  //   {
-  //     image: singleBusiness?.mediaFiles?.length > 0 ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage,
-  //   },
-  //   {
-  //     image: singleBusiness?.mediaFiles?.length > 0 ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage,
-  //   },
-  //   {
-  //     image: singleBusiness?.mediaFiles?.length > 0 ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage,
-  //   },
-  //   {
-  //     image: singleBusiness?.mediaFiles?.length > 0 ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage,
-  //   },
-  //   {
-  //     image: singleBusiness?.mediaFiles?.length > 0 ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage,
-  //   },
-  //   {
-  //     image: singleBusiness?.mediaFiles?.length > 0 ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage,
-  //   },
-  //   {
-  //     image: singleBusiness?.mediaFiles?.length > 0 ? singleBusiness?.mediaFiles[1]?.fileUrl : EmptyImage,
-  //   },
-  // ];
-
-  // const amenitiesArray =  singleBusiness?.amenities.map((item) => ({
-  //   value: item._id,
-  //   label: item.name, 
-  // }));
 
   const foodItems = [
     {
@@ -167,549 +115,591 @@ const BusinessDetails = () => {
     window.open(url, "_blank");
   };
 
-
-
-
   // -----------------------------------------------
 
+  const getUserDetails = async () => {
+    const response = localStorage.getItem("adminToken");
+    if (!response) return;
 
+    const userParse = JSON.parse(response);
+    setUserToken(userParse);
+    getAllUsers(userParse);
+    getBusinessData(userParse);
+  };
 
-
-        
-      
-        const getUserDetails = async () => {
-          const response = localStorage.getItem("adminToken");
-          if (!response) return;
-      
-          const userParse = JSON.parse(response);
-          setUserToken(userParse);
-          getAllUsers(userParse);
-          getBusinessData(userParse)
-        };
-
-
-
-        const getBusinessData = async(token) => {
-          setModalIsOpen(true)
-          try {
-            await axios.get(`${config.api}admin/business/${receivedData?._id}` , {
-              headers: {
-                  "Authorization": "Bearer " +  token ,
-                  "content-type": "application/json"
-              }
-          })
-          .then(response => {
-            console.log("response",response)
-            setModalIsOpen(false)
-            setSingleBusiness(response?.data?.data)
-          })
-          .catch((err) => {
-            setModalIsOpen(false)
-            console.log(err)
-          })
-          }catch (error) {
-            setModalIsOpen(false)
-            console.log(error)
-          }
-        }
-
-      
-        const customStyles = {
-          content: {
-            top: "50%",
-            left: "50%",
-            right: "auto",
-            bottom: "auto",
-            marginRight: "-50%",
-            transform: "translate(-50%, -50%)",
-            width: "600px",
-            borderRadius: 18,
-            paddingLeft: 40,
+  const getBusinessData = async (token) => {
+    setModalIsOpen(true);
+    try {
+      await axios
+        .get(`${config.api}admin/business/${receivedData?._id}`, {
+          headers: {
+            Authorization: "Bearer " + token,
+            "content-type": "application/json",
           },
-        };
-
-        const customStyles2 = {
-          content: {
-            top: "50%",
-            left: "50%",
-            right: "auto",
-            bottom: "auto",
-            marginRight: "-50%",
-            transform: "translate(-50%, -50%)",
-            width: "600px",
-            borderRadius: 18,
-            paddingLeft: 20,
-          },
-        };
-      
-        const isValidURL = (url) => {
-          const urlPattern = /^(https?:\/\/)?([\w\d-]+\.)+\w{2,}(\/[\w\d-./?%&=]*)?$/;
-            return urlPattern.test(url);
-        };
-      
-        const addSocialMediaLink = () => {
-            if (!socialMediaInput.trim()) {
-                alert("Please enter a URL");
-                return;
-            }
-      
-            if (!isValidURL(socialMediaInput)) {
-                alert("Please enter a valid URL");
-                return;
-            }
-      
-            setSocialMediaLinks([...socialMediaLinks, socialMediaInput]);
-            setSocialMediaInput(""); 
-            setError(""); 
-        };
-      
-        const removeSocialMediaLink = (index) => {
-            setSocialMediaLinks(socialMediaLinks.filter((_, i) => i !== index));
-        };
-      
-      
-        const getAllUsers = async (token) => {
-          await axios
-            .get(`${config.api}admin/users`, {
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-              },
-            })
-            .then((response) => {
-              // console.log(response , "All Users")
-              if (response?.data?.data) {
-                const alignedUsers = response?.data?.data.map((item) => ({
-                  value: item._id,
-                  label: item.email,
-                }));
-                setAllUsers(alignedUsers);
-              }
-            });
-        };
-      
-        const getAllCategories = async () => {
-          try {
-            const response = await axios.get(config.api + `business-category`);
-            const categories = response?.data?.data.map((item) => ({
-              value: item._id,
-              label: item.name,
-            }));
-      
-            setBusCates(categories);
-            // console.log('Formatted Categories:', categories);
-          } catch (error) {
-            console.error("Error fetching categories:", error);
-          }
-        };
-      
-        const getAllAmenities = async () => {
-          try {
-            const response = await axios.get(config.api + `business-amenity`);
-            const amenities = response?.data?.data.map((item) => ({
-              value: item._id,
-              label: item.name,
-            }));
-      
-            setBusAmenities(amenities);
-            // console.log('Formatted amenities:', amenities);
-          } catch (error) {
-            console.error("Error fetching categories:", error);
-          }
-        };
-      
-        const getStates = async () => {
-          await axios
-            .get(config.api + "locations/countries/678da88c9c4467c6aa4eeb86/states")
-            .then((response) => {
-              if (response?.data?.data) {
-                const formattedStates = response?.data?.data.map((item) => ({
-                  value: item._id,
-                  label: item.name,
-                }));
-      
-                setStates(formattedStates);
-              }
-            });
-        };
-      
-        const getCities = async (id) => {
-          await axios
-            .get(config.api + `locations/states/${id}/cities`)
-            .then((response) => {
-              if (response?.data?.data) {
-                const formattedCities = response?.data?.data.map((item) => ({
-                  value: item._id,
-                  label: item.name,
-                }));
-                setCities(formattedCities);
-              }
-            });
-        };
-      
-        const getPincodes = async (id) => {
-          await axios
-            .get(config.api + `locations/cities/${id}/pincodes`)
-            .then((response) => {
-              if (response?.data?.data) {
-                const formattedCities = response.data.data.map((item) => ({
-                  value: item._id,
-                  label: item.code,
-                }));
-                setPincodes(formattedCities);
-              }
-            });
-        };
-      
-        const inputRef = useRef(null);
-      
-        const { isLoaded } = useJsApiLoader({
-          id: "google-map-script",
-          googleMapsApiKey: GOOGLE_MAPS_API_KEY,
-          libraries: ["places"],
+        })
+        .then((response) => {
+          console.log("response", response);
+          setModalIsOpen(false);
+          setSingleBusiness(response?.data?.data);
+        })
+        .catch((err) => {
+          setModalIsOpen(false);
+          console.log(err);
         });
-      
-        const handlePlacesChange = () => {
-          const places = inputRef.current.getPlaces();
-          if (places.length > 0) {
-            const location = places[0].geometry.location;
-            const lat = location.lat();
-            const lng = location.lng();
-      
-            setMapCenter({ lat, lng });
-            setSelectedLocation({ lat, lng });
-            // console.log(`Selected Location: Latitude: ${lat}, Longitude: ${lng}`);
-          }
-        };
-  
-      
-        const businessAddValues = {
-          userName: receivedData?.userName || '',
-          businessName: receivedData?.name ||'',
-          businessState: receivedData?.stateId?._id || '',
-          businessCity: receivedData?.cityId?._id || '',
-          businessTitle: receivedData?.title || '',
-          businessCategory: receivedData?.categoryId?._id || '',
-          mobileNumber: receivedData?.mobileNumber || '',
-          workingHours: receivedData?.workingHours || '',
-          servicesOffer: receivedData?.servicesOffer || '',
-          email: receivedData?.email || '',
-          socialMedia: "",
-          completeAddress: receivedData?.completeAddress || '',
-          landmark: receivedData?.landmark || '',
-          pincode: receivedData?.pincodeId?._id || '',
-          yearlyTurnOver: receivedData?.yearlyTurnOver || '',
-          noOfEmployees: receivedData?.noOfEmployees || '',
-          yearOfEstablishment: receivedData?.yearOfEstablishment || '',
-          websiteAddress: receivedData?.websiteAddress || '',
-          GSTNumber: receivedData?.GSTNumber || '',
-          itemName: "",
-          itemType: "",
-          itemPrice: "",
-          userId: receivedData?.userId?._id || '',
-        };
-      
-        const workingHours = [
-          { value: "10:00 AM - 6:00 PM 8Hrs", label: "10:00 AM - 6:00 PM 8Hrs" },
-          { value: "09:00 AM - 6:00 PM 9Hrs", label: "09:00 AM - 6:00 PM 9Hrs" },
-          { value: "10:00 AM - 10:00 PM 12Hrs", label: "10:00 AM - 10:00 PM 12Hrs" },
-        ];
-      
-        const servicesOffered = [
-          { value: "B2B", label: "B2B (Business-to-Business)" },
-          { value: "B2C", label: "B2C (Business-to-Consumer)" },
-          { value: "Both", label: "Both" },
-        ];
-      
-        const foodItemTypes = [
-          { value: "Veg", label: "Veg" },
-          { value: "Non-Veg", label: "Non-Veg" },
-        ];
-      
-        const handleBusinessDocFile = async (event) => {
-          const file = event.target.files[0];
-          if (file) {
-            const maxSize = 4 * 1024 * 1024;
-            if (file.size > maxSize) {
-              alert("File size exceeds 4MB. Please upload a smaller file.");
-              return;
-            }
-            setBusinessDoc(file);
-          }
-        };
-      
-        const handleFileChange = async (e) => {
-          const selectedFiles = Array.from(e.target.files);
-      
-          const validFiles = selectedFiles.filter((file) => {
-            if (file.size > 2 * 1024 * 1024) {
-              alert(`File ${file.name} exceeds 2MB and will not be uploaded.`);
-              return false;
-            }
-            return file.type === "image/jpeg" || file.type === "image/png";
-          });
-      
-          const base64Photos = await Promise.all(
-            validFiles.map((file) => fileToBase64(file))
-          );
-          setBusinessPhotos((prevPhotos) => [...prevPhotos, ...base64Photos]);
-        };
-      
-        const fileToBase64 = (file) => {
-          return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = (error) => reject(error);
-            reader.readAsDataURL(file);
-          });
-        };
-      
-        const addFoodItem = (values) => {
-          const { itemName, itemType, itemPrice } = values;
-          const newFoodItem = { itemName, itemType, itemPrice };
-          setFoodItemsArray((prevFoodItemsArray) => [
-            ...prevFoodItemsArray,
-            newFoodItem,
-          ]);
-        };
-      
-        const removeFoodItem = (index) => {
-          setFoodItemsArray((prevFoodItemsArray) =>
-            prevFoodItemsArray.filter((_, i) => i !== index)
-          );
-        };
-      
-        const handleRemoveImage = (indexToRemove) => {
-          setBusinessPhotos((prevPhotos) =>
-            prevPhotos.filter((_, index) => index !== indexToRemove)
-          );
-        };
-      
-        function numbersOnly(e) {
-          var key = e.key;
-          var regex = /[0-9]|\./;
-          if (!regex.test(key)) {
-            e.preventDefault();
-          } else {
-            // console.log("You pressed a key: " + key);
-          }
+    } catch (error) {
+      setModalIsOpen(false);
+      console.log(error);
+    }
+  };
+
+  const customStyles = {
+    content: {
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-50%",
+      transform: "translate(-50%, -50%)",
+      width: "600px",
+      borderRadius: 18,
+      paddingLeft: 40,
+    },
+  };
+
+  const customStyles2 = {
+    content: {
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-50%",
+      transform: "translate(-50%, -50%)",
+      width: "600px",
+      borderRadius: 18,
+      paddingLeft: 20,
+    },
+  };
+
+  const isValidURL = (url) => {
+    const urlPattern = /^(https?:\/\/)?([\w\d-]+\.)+\w{2,}(\/[\w\d-./?%&=]*)?$/;
+    return urlPattern.test(url);
+  };
+
+  const addSocialMediaLink = () => {
+    if (!socialMediaInput.trim()) {
+      alert("Please enter a URL");
+      return;
+    }
+
+    if (!isValidURL(socialMediaInput)) {
+      alert("Please enter a valid URL");
+      return;
+    }
+
+    setSocialMediaLinks([...socialMediaLinks, socialMediaInput]);
+    setSocialMediaInput("");
+    setError("");
+  };
+
+  const removeSocialMediaLink = (index) => {
+    setSocialMediaLinks(socialMediaLinks.filter((_, i) => i !== index));
+  };
+
+  const getAllUsers = async (token) => {
+    await axios
+      .get(`${config.api}admin/users`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        // console.log(response , "All Users")
+        if (response?.data?.data) {
+          const alignedUsers = response?.data?.data.map((item) => ({
+            value: item._id,
+            label: item.email,
+          }));
+          setAllUsers(alignedUsers);
         }
-  
-      const handleAddingBusiness = async (data) => {
-          const formData = new FormData();
-          formData.append("userName", data.userName);
-          formData.append("name", data.businessName);
-          formData.append("title", data.businessTitle);
-          formData.append("mobileNumber", data.mobileNumber);
-          formData.append("email", data.email);
-          socialMediaLinks.forEach((items) => {
-              formData.append('socialMediaLink' , items);
-          })
-          formData.append("categoryId", data.businessCategory);
-          formData.append("yearlyTurnOver", data.yearlyTurnOver);
-          formData.append("noOfEmployees", data.noOfEmployees);
-          formData.append("yearOfEstablishment", data.yearOfEstablishment);
-          formData.append("websiteAddress", data.websiteAddress);
-          formData.append("GSTNumber", data.GSTNumber);
-          multiAmentites.forEach((amenities) => {
-              formData.append("amenities", amenities.value);
-          });
-          formData.append("servicesOffer", data.servicesOffer);
-          formData.append("stateId", data.businessState);
-          formData.append("cityId", data.businessCity);
-          formData.append("pincodeId", data.pincode);
-          formData.append("completeAddress", data.completeAddress);
-          formData.append("landmark", data.landmark);
-          formData.append("workingHours", data.workingHours);
-          formData.append("file", businessDoc);
-          formData.append("latitude", selectedLocation?.lat);
-          formData.append("longitude", selectedLocation?.lng);
-          formData.append("userId", data.userId);
-      
-          // console.log("formData", formData);
-          setModalIsOpen(true);
-          try {
-          await axios
-              .post(`${config.api}admin/business`, formData, {
-                  headers: {
-                      Authorization: `Bearer ${userToken}`,
-                  },
-              })
-              .then((response) => {
-              // console.log(response);
-              if (response?.data?.status == "success") {
-                  toast.success("Business Created Successfully");
-                  setModalIsOpen(false);
-                  const busId = response?.data?.data?._id;
-                  navigate("/business/add-photos", { state: { busId } });
-              } else {
-                  toast.error("Error in Creating business");
-                  setModalIsOpen(false);
-              }
-              })
-              .catch((err) => {
-                  console.log(err);
-                  setModalIsOpen(false);
-              });
-          //  console.log("Response:", response.data);
-          } catch (error) {
-              setModalIsOpen(false);
-          }
-      };
-      
-
-
-      const emptyImageLoop = [
-        {
-          image: EmptyImage
-        },
-        {
-          image: EmptyImage
-        },
-        {
-          image: EmptyImage
-        },
-        {
-          image: EmptyImage
-        },
-      ]
-
-  
-
-      const businessDetailsAll = [
-        {
-          name: 'User Name',
-          value: singleBusiness?.userName
-        },
-        {
-          name: 'Mobile Number',
-          value: singleBusiness?.mobileNumber
-        },
-        {
-          name: 'Business Name',
-          value: singleBusiness?.name
-        },
-        {
-          name: 'Business Category',
-          value: singleBusiness?.category?.name
-        },
-        {
-          name: 'Yearly Turnover',
-          value: singleBusiness?.yearlyTurnOver
-        },
-        {
-          name: 'Employees Size',
-          value: singleBusiness?.noOfEmployees
-        },
-        {
-          name: 'Year Of Establishment',
-          value: singleBusiness?.yearOfEstablishment
-        },
-        {
-          name: 'Gst Number',
-          value: singleBusiness?.GSTNumber
-        },
-        {
-          name: 'Submitted By',
-          value: singleBusiness?.userId?.email
-        },
-        {
-          name: 'Area or Locality',
-          value: singleBusiness?.area
-        },
-        {
-          name: 'State',
-          value: singleBusiness?.state?.name
-        },
-        {
-          name: 'Pincode',
-          value: singleBusiness?.pincode?.code
-        }
-      ]
-
-      const handleUpdateBusinessStatus = async(key) => {
-        const formData = new FormData();
-        formData.append("status" , key);
-
-        console.log(formData)
-        setModalIsOpen(true)
-
-        try {
-          await axios.put(`${config.api}admin/business/${receivedData?._id}` , formData , {
-            headers: {
-              Authorization: `Bearer ${userToken}`,
-            },
-          })
-          .then((response) => {
-            console.log(response)
-            if(response?.data?.success == true) {
-                setModalIsOpen(false)
-                toast.success('Business Status Updated');
-                navigate('/business')
-            }else {
-                setModalIsOpen(false)
-                toast.error('Error in Updating Status');
-            }
-          })
-          .catch((err) => {
-            setModalIsOpen(false)
-            toast.error(err?.message);
-            toast.error(err?.response?.data?.message);
-            // console.log(err , 'error')
-          });
-        } catch (error) {
-          setModalIsOpen(false)
-          console.log(error)
-        }
-      }
-
-      console.log(singleBusiness , "single")
-
-
-      const formatDate = (isoString) => {
-        return new Date(isoString)
-          .toLocaleDateString("en-GB")
-          .replace(/\//g, "-");
-    };
-    
-
-    const productLink = `https://www.localmart.app/search/complete-details/${receivedData?._id}`;
-    const handleCopyToClipboard = () => {
-      setShareModalOpen(false)
-      navigator.clipboard.writeText(productLink).then(() => {
-        toast.success("Link copied!");
       });
-    };
+  };
 
+  const getAllCategories = async () => {
+    try {
+      const response = await axios.get(config.api + `business-category`);
+      const categories = response?.data?.data.map((item) => ({
+        value: item._id,
+        label: item.name,
+      }));
 
-    const shareLink = (platform) => {
-      const url = `https://www.localmart.app/search/complete-details/${receivedData?._id}`;
-      const encodedUrl = encodeURIComponent(url);
-    
-      let shareUrl = "";
-    
-      switch (platform) {
-        case "whatsapp":
-          shareUrl = `https://wa.me/?text=${encodedUrl}`;
-          break;
-        case "telegram":
-          shareUrl = `https://t.me/share/url?url=${encodedUrl}`;
-          break;
-        case "instagram":
-          shareUrl = `https://www.instagram.com/?url=${encodedUrl}`;
-          break;
-        case "facebook":
-          shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
-          break;
-        default:
-          alert("Invalid platform");
-          return;
+      setBusCates(categories);
+      // console.log('Formatted Categories:', categories);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
+
+  const getAllAmenities = async () => {
+    try {
+      const response = await axios.get(config.api + `business-amenity`);
+      const amenities = response?.data?.data.map((item) => ({
+        value: item._id,
+        label: item.name,
+      }));
+
+      setBusAmenities(amenities);
+      // console.log('Formatted amenities:', amenities);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
+
+  const getStates = async () => {
+    await axios
+      .get(config.api + "locations/countries/678da88c9c4467c6aa4eeb86/states")
+      .then((response) => {
+        if (response?.data?.data) {
+          const formattedStates = response?.data?.data.map((item) => ({
+            value: item._id,
+            label: item.name,
+          }));
+
+          setStates(formattedStates);
+        }
+      });
+  };
+
+  const getCities = async (id) => {
+    await axios
+      .get(config.api + `locations/states/${id}/cities`)
+      .then((response) => {
+        if (response?.data?.data) {
+          const formattedCities = response?.data?.data.map((item) => ({
+            value: item._id,
+            label: item.name,
+          }));
+          setCities(formattedCities);
+        }
+      });
+  };
+
+  const getPincodes = async (id) => {
+    await axios
+      .get(config.api + `locations/cities/${id}/pincodes`)
+      .then((response) => {
+        if (response?.data?.data) {
+          const formattedCities = response.data.data.map((item) => ({
+            value: item._id,
+            label: item.code,
+          }));
+          setPincodes(formattedCities);
+        }
+      });
+  };
+
+  const inputRef = useRef(null);
+
+  const { isLoaded } = useJsApiLoader({
+    id: "google-map-script",
+    googleMapsApiKey: GOOGLE_MAPS_API_KEY,
+    libraries: ["places"],
+  });
+
+  const handlePlacesChange = () => {
+    const places = inputRef.current.getPlaces();
+    if (places.length > 0) {
+      const location = places[0].geometry.location;
+      const lat = location.lat();
+      const lng = location.lng();
+
+      setMapCenter({ lat, lng });
+      setSelectedLocation({ lat, lng });
+      // console.log(`Selected Location: Latitude: ${lat}, Longitude: ${lng}`);
+    }
+  };
+
+  const businessAddValues = {
+    userName: receivedData?.userName || "",
+    businessName: receivedData?.name || "",
+    businessState: receivedData?.stateId?._id || "",
+    businessCity: receivedData?.cityId?._id || "",
+    businessTitle: receivedData?.title || "",
+    businessCategory: receivedData?.categoryId?._id || "",
+    mobileNumber: receivedData?.mobileNumber || "",
+    workingHours: receivedData?.workingHours || "",
+    servicesOffer: receivedData?.servicesOffer || "",
+    email: receivedData?.email || "",
+    socialMedia: "",
+    completeAddress: receivedData?.completeAddress || "",
+    landmark: receivedData?.landmark || "",
+    pincode: receivedData?.pincodeId?._id || "",
+    yearlyTurnOver: receivedData?.yearlyTurnOver || "",
+    noOfEmployees: receivedData?.noOfEmployees || "",
+    yearOfEstablishment: receivedData?.yearOfEstablishment || "",
+    websiteAddress: receivedData?.websiteAddress || "",
+    GSTNumber: receivedData?.GSTNumber || "",
+    itemName: "",
+    itemType: "",
+    itemPrice: "",
+    userId: receivedData?.userId?._id || "",
+  };
+
+  const workingHours = [
+    { value: "10:00 AM - 6:00 PM 8Hrs", label: "10:00 AM - 6:00 PM 8Hrs" },
+    { value: "09:00 AM - 6:00 PM 9Hrs", label: "09:00 AM - 6:00 PM 9Hrs" },
+    { value: "10:00 AM - 10:00 PM 12Hrs", label: "10:00 AM - 10:00 PM 12Hrs" },
+  ];
+
+  const servicesOffered = [
+    { value: "B2B", label: "B2B (Business-to-Business)" },
+    { value: "B2C", label: "B2C (Business-to-Consumer)" },
+    { value: "Both", label: "Both" },
+  ];
+
+  const foodItemTypes = [
+    { value: "Veg", label: "Veg" },
+    { value: "Non-Veg", label: "Non-Veg" },
+  ];
+
+  const handleBusinessDocFile = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const maxSize = 4 * 1024 * 1024;
+      if (file.size > maxSize) {
+        alert("File size exceeds 4MB. Please upload a smaller file.");
+        return;
       }
-    
-      window.open(shareUrl, "_blank");
-    };
-    
+      setBusinessDoc(file);
+    }
+  };
 
+  const handleFileChange = async (e) => {
+    const selectedFiles = Array.from(e.target.files);
+
+    const validFiles = selectedFiles.filter((file) => {
+      if (file.size > 2 * 1024 * 1024) {
+        alert(`File ${file.name} exceeds 2MB and will not be uploaded.`);
+        return false;
+      }
+      return file.type === "image/jpeg" || file.type === "image/png";
+    });
+
+    const base64Photos = await Promise.all(
+      validFiles.map((file) => fileToBase64(file))
+    );
+    setBusinessPhotos((prevPhotos) => [...prevPhotos, ...base64Photos]);
+  };
+
+  const fileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const addFoodItem = (values) => {
+    const { itemName, itemType, itemPrice } = values;
+    const newFoodItem = { itemName, itemType, itemPrice };
+    setFoodItemsArray((prevFoodItemsArray) => [
+      ...prevFoodItemsArray,
+      newFoodItem,
+    ]);
+  };
+
+  const removeFoodItem = (index) => {
+    setFoodItemsArray((prevFoodItemsArray) =>
+      prevFoodItemsArray.filter((_, i) => i !== index)
+    );
+  };
+
+  const handleRemoveImage = (indexToRemove) => {
+    setBusinessPhotos((prevPhotos) =>
+      prevPhotos.filter((_, index) => index !== indexToRemove)
+    );
+  };
+
+  function numbersOnly(e) {
+    var key = e.key;
+    var regex = /[0-9]|\./;
+    if (!regex.test(key)) {
+      e.preventDefault();
+    } else {
+      // console.log("You pressed a key: " + key);
+    }
+  }
+
+  const handleAddingBusiness = async (data) => {
+    const formData = new FormData();
+    formData.append("userName", data.userName);
+    formData.append("name", data.businessName);
+    formData.append("title", data.businessTitle);
+    formData.append("mobileNumber", data.mobileNumber);
+    formData.append("email", data.email);
+    socialMediaLinks.forEach((items) => {
+      formData.append("socialMediaLink", items);
+    });
+    formData.append("categoryId", data.businessCategory);
+    formData.append("yearlyTurnOver", data.yearlyTurnOver);
+    formData.append("noOfEmployees", data.noOfEmployees);
+    formData.append("yearOfEstablishment", data.yearOfEstablishment);
+    formData.append("websiteAddress", data.websiteAddress);
+    formData.append("GSTNumber", data.GSTNumber);
+    multiAmentites.forEach((amenities) => {
+      formData.append("amenities", amenities.value);
+    });
+    formData.append("servicesOffer", data.servicesOffer);
+    formData.append("stateId", data.businessState);
+    formData.append("cityId", data.businessCity);
+    formData.append("pincodeId", data.pincode);
+    formData.append("completeAddress", data.completeAddress);
+    formData.append("landmark", data.landmark);
+    formData.append("workingHours", data.workingHours);
+    formData.append("file", businessDoc);
+    formData.append("latitude", selectedLocation?.lat);
+    formData.append("longitude", selectedLocation?.lng);
+    formData.append("userId", data.userId);
+
+    // console.log("formData", formData);
+    setModalIsOpen(true);
+    try {
+      await axios
+        .post(`${config.api}admin/business`, formData, {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        })
+        .then((response) => {
+          // console.log(response);
+          if (response?.data?.status == "success") {
+            toast.success("Business Created Successfully");
+            setModalIsOpen(false);
+            const busId = response?.data?.data?._id;
+            navigate("/business/add-photos", { state: { busId } });
+          } else {
+            toast.error("Error in Creating business");
+            setModalIsOpen(false);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          setModalIsOpen(false);
+        });
+      //  console.log("Response:", response.data);
+    } catch (error) {
+      setModalIsOpen(false);
+    }
+  };
+
+  const emptyImageLoop = [
+    {
+      image: EmptyImage,
+    },
+    {
+      image: EmptyImage,
+    },
+    {
+      image: EmptyImage,
+    },
+    {
+      image: EmptyImage,
+    },
+  ];
+
+  const businessDetailsAll = [
+    {
+      name: "User Name",
+      value: singleBusiness?.userName
+        ? singleBusiness?.userName
+        : "Not Provided",
+      invalid: singleBusiness?.userName ? false : true,
+    },
+    {
+      name: "Mobile Number",
+      value: singleBusiness?.mobileNumber
+        ? singleBusiness?.mobileNumber
+        : "Not Provided",
+      invalid: singleBusiness?.mobileNumber ? false : true,
+    },
+    {
+      name: "Business Name",
+      value: singleBusiness?.name ? singleBusiness?.name : "Not Provided",
+      invalid: singleBusiness?.name ? false : true,
+    },
+    {
+      name: "Business Category",
+      value: singleBusiness?.category?.name
+        ? singleBusiness?.category?.name
+        : "Not Provided",
+      invalid: singleBusiness?.category?.name ? false : true,
+    },
+    {
+      name: "Yearly Turnover",
+      value: singleBusiness?.yearlyTurnOver
+        ? singleBusiness?.yearlyTurnOver
+        : "Not Provided",
+      invalid: singleBusiness?.yearlyTurnOver ? false : true,
+    },
+    {
+      name: "Employees Size",
+      value: singleBusiness?.noOfEmployees
+        ? singleBusiness?.noOfEmployees
+        : "Not Provided",
+      invalid: singleBusiness?.noOfEmployees ? false : true,
+    },
+    {
+      name: "Year Of Establishment",
+      value: singleBusiness?.yearOfEstablishment
+        ? singleBusiness?.yearOfEstablishment
+        : "Not Provided",
+      invalid: singleBusiness?.yearOfEstablishment ? false : true,
+    },
+    {
+      name: "Gst Number",
+      value: singleBusiness?.GSTNumber
+        ? singleBusiness?.GSTNumber
+        : "Not Provided",
+      invalid: singleBusiness?.GSTNumber ? false : true,
+    },
+    {
+      name: "Submitted By",
+      value: singleBusiness?.userId?.email
+        ? singleBusiness?.userId?.email
+        : "Not Provided",
+      invalid: singleBusiness?.userId?.email ? false : true,
+    },
+    {
+      name: "Area or Locality",
+      value: singleBusiness?.area ? singleBusiness?.area : "Not Provided",
+      invalid: singleBusiness?.area ? false : true,
+    },
+    {
+      name: "State",
+      value: singleBusiness?.state?.name
+        ? singleBusiness?.state?.name
+        : "Not Provided",
+      invalid: singleBusiness?.state?.name ? false : true,
+    },
+    {
+      name: "Pincode",
+      value: singleBusiness?.pincode?.code
+        ? singleBusiness?.pincode?.code
+        : "Not Provided",
+      invalid: singleBusiness?.pincode?.code ? false : true,
+    },
+  ];
+
+  const handleUpdateBusinessStatus = async (key) => {
+    const formData = new FormData();
+    formData.append("status", key);
+
+    console.log(formData);
+    setModalIsOpen(true);
+
+    try {
+      await axios
+        .put(`${config.api}admin/business/${receivedData?._id}`, formData, {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        })
+        .then((response) => {
+          console.log(response);
+          if (response?.data?.success == true) {
+            setModalIsOpen(false);
+            toast.success("Business Status Updated");
+            navigate("/business");
+          } else {
+            setModalIsOpen(false);
+            toast.error("Error in Updating Status");
+          }
+        })
+        .catch((err) => {
+          setModalIsOpen(false);
+          toast.error(err?.message);
+          toast.error(err?.response?.data?.message);
+          // console.log(err , 'error')
+        });
+    } catch (error) {
+      setModalIsOpen(false);
+      console.log(error);
+    }
+  };
+
+  const deleteBusiness = async (busId) => {
+    setDeleteLoader(true);
+    try {
+      await axios
+        .delete(`${config.api}admin/business/${busId}`, {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        })
+        .then((response) => {
+          // console.log(response);
+          if (response?.data?.success == true) {
+            setDeleteLoader(false);
+            toast.success("Business Deleted Successfully");
+            navigate("/business");
+          } else {
+            setDeleteLoader(false);
+            toast.error("Error in Deleting Business");
+          }
+        })
+        .catch((err) => {
+          setDeleteLoader(false);
+          toast.error(err?.message);
+          toast.error(err?.response?.data?.message);
+          // console.log(err , 'error')
+        });
+    } catch (error) {
+      setDeleteLoader(false);
+      console.log(error);
+    }
+  };
+
+  // console.log(singleBusiness , "single")
+
+  const formatDate = (isoString) => {
+    return new Date(isoString).toLocaleDateString("en-GB").replace(/\//g, "-");
+  };
+
+  const productLink = `https://www.localmart.app/search/complete-details/${receivedData?._id}`;
+  const handleCopyToClipboard = () => {
+    setShareModalOpen(false);
+    navigator.clipboard.writeText(productLink).then(() => {
+      toast.success("Link copied!");
+    });
+  };
+
+  const shareLink = (platform) => {
+    const url = `https://www.localmart.app/search/complete-details/${receivedData?._id}`;
+    const encodedUrl = encodeURIComponent(url);
+
+    let shareUrl = "";
+
+    switch (platform) {
+      case "whatsapp":
+        shareUrl = `https://wa.me/?text=${encodedUrl}`;
+        break;
+      case "telegram":
+        shareUrl = `https://t.me/share/url?url=${encodedUrl}`;
+        break;
+      case "instagram":
+        shareUrl = `https://www.instagram.com/?url=${encodedUrl}`;
+        break;
+      case "facebook":
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
+        break;
+      default:
+        alert("Invalid platform");
+        return;
+    }
+
+    window.open(shareUrl, "_blank");
+  };
 
   return (
     <>
@@ -1279,6 +1269,32 @@ const BusinessDetails = () => {
           </div>
         </div>
       </Modal>
+      <Modal
+          isOpen={deletModal}
+          style={customStyles2}
+          contentLabel="Delete Modal"
+      >
+        <div className="sure-delete-modal-success">
+          <div className="inner-delete-display">
+            <p className='text-xl font-medium text-Black'>Are you sure you want to delete this Business</p>
+              <div className="single-category-item bg-LightBlue rounded-10p p-[15px] relative my-6">
+                  <div className="inner-single-category-item flex items-center gap-5">
+                      <div className="left-side-image-category">
+                          <img src={singleBusiness?.mediaFiles && singleBusiness?.mediaFiles.length > 0 ? singleBusiness?.mediaFiles[0]?.fileUrl : EmptyImage} className='h-12 w-12 rounded-full object-cover' alt="" />
+                      </div>
+                      <div className="right-side-category-name">
+                          <p className='text-Black font-medium'>{singleBusiness?.name}</p>
+                          <p className="text-sm">{singleBusiness?.businessCode}</p>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div className="cancel-delete-buttons flex items-center justify-between">
+              <button type="button" onClick={() => setDeleteModal(false)} className='px-5 py-2 rounded-full text-xl bg-LightGrayBg '>Cancel</button>
+              <button type="button" disabled={deleteLoader} onClick={() => deleteBusiness(singleBusiness?._id)} className='px-5 py-2 rounded-full text-xl bg-opacity-20 text-red-600 bg-red-400'>{deleteLoader ? 'Wait...' : 'Delete'}</button>
+          </div>
+        </div>
+      </Modal>
       <div className="top-searched-detail-rating-favorite-sec sticky top-0 z-[9999] bg-white pl-[270px] py-4 pr-8  flex flex-wrap gap-y-6 items-center justify-between gap-x-5">
         <div className="left-title-rating-search ">
           <h4 className="text-2xl font-medium text-Black">
@@ -1304,8 +1320,9 @@ const BusinessDetails = () => {
         <div className="right-side-accept-reject-button-section">
             <div className="two-reviewing-buttons flex items-center gap-4">
                 {/* <button type="button" className="bg-white border border-Secondary text-xl font-medium rounded-lg py-2 px-8 text-Secondary" onClick={() => setEditMode(true)}>Edit</button> */}
-                <button type="button" className="bg-green-500 text-xl font-semibold rounded-lg py-2 px-8 text-white" onClick={() => handleUpdateBusinessStatus('published')}>Publish</button>
-                <button type="button" className="bg-red-100 text-xl rounded-lg py-2 px-8 text-red-600"  onClick={() => handleUpdateBusinessStatus('rejected')}>Reject</button>
+                <button type="button" className="bg-green-500 text-lg font-semibold rounded-lg py-2 px-6 border border-green-500 text-white" onClick={() => handleUpdateBusinessStatus('published')}>Publish</button>
+                <button type="button" className="bg-red-100 text-lg rounded-lg py-2 px-6 text-red-600 border border-red-100"  onClick={() => handleUpdateBusinessStatus('rejected')}>Reject</button>
+                <button type="button" className="text-lg rounded-lg py-2 px-6 text-red-600 border-red-600 border" onClick={() => setDeleteModal(true)} >Delete</button>
             </div>
         </div>
       </div>
@@ -1406,7 +1423,7 @@ const BusinessDetails = () => {
                                 )
                                 })}
                             </div>
-                            <div className="business-tags-section mt-5">
+                            <div className="business-tags-section mt-10">
                               <h4 className='text-LightBlack opacity-50'>Business Tags</h4>
                               <div className="inner-tags-section flex items-center flex-wrap gap-5 mt-2">
                                   {singleBusiness?.tags?.length > 0 ? 
@@ -1417,7 +1434,7 @@ const BusinessDetails = () => {
                                                 <p  className="text-Secondary capitalize">{items}</p>
                                             </div>
                                           )
-                                        }) : null
+                                        }) : <p className="text-red-400">Not Provided</p>
                                   }
                               </div>
                             </div>
@@ -1431,7 +1448,7 @@ const BusinessDetails = () => {
                             <div className="combined-details-screen-profile flex flex-col gap-10  mt-3">
                                 <div className="single-detail-profile-sec" >
                                     <p className='text-LightBlack opacity-50'>Website Address</p>
-                                    <a href={singleBusiness?.websiteAddress} target="_blank" className="text-Secondary">{singleBusiness?.websiteAddress}</a>
+                                    {singleBusiness?.websiteAddress ? <a href={singleBusiness?.websiteAddress} target="_blank" className="text-Secondary">{singleBusiness?.websiteAddress}</a> : <p className="text-red-400">Not Provided</p>}
                                 </div>
                                 
                                 <div className="single-detail-profile-sec" >
@@ -1443,12 +1460,14 @@ const BusinessDetails = () => {
                                           <a href={items} target="_blank" className="text-Secondary">{items}</a>    
                                         </div>
                                       )
-                                     }) : null
+                                     }) : <p className="text-red-400">Not Provided</p>
                                     }                                    
                                 </div>
                             </div>
                         </div>
                       </div>
+                      {singleBusiness?.amenities &&
+                          singleBusiness?.amenities.length > 0 ? 
                       <div className="amenities-section-searched">
                         <h4 className="text-20 font-medium text-Black mb-3">
                           Amenities
@@ -1474,7 +1493,7 @@ const BusinessDetails = () => {
                               })
                             : null}
                         </div>
-                      </div>
+                      </div> : null }
                       <div className="food-items-section-searched hidden">
                         <div className="food-items-slider">
                           <div className="food-items-section flex justify-between gap-10 items-center mb-3">
@@ -1513,6 +1532,7 @@ const BusinessDetails = () => {
                           </div>
                         </div>
                       </div>
+                      {singleBusiness?.reviews && singleBusiness?.reviews?.length > 0 ? 
                       <div className="rating-section-searched ">
                         <div className="rating-searched-section flex justify-between gap-10 items-center mb-4">
                           <div className="rating-searched-heading">
@@ -1544,7 +1564,7 @@ const BusinessDetails = () => {
                                 )
                             }) : null}
                         </div>
-                      </div>
+                      </div> : null }
                     </div>
                   </div>
                   <div className="col-span-4 business-contact-details-right">
@@ -1624,7 +1644,7 @@ const BusinessDetails = () => {
       </div>
     </div> }
     </>
-  );
+  )
 };
 
 export default BusinessDetails;

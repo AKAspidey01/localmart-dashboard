@@ -113,14 +113,14 @@ const Advertisements = () => {
                       return (
                         <tr className='hover:bg-Secondary hover:bg-opacity-5' key={index}>
                           <td>
-                            <div className="business-name-sec flex items-center gap-x-4">
+                            <button className="business-name-sec flex items-center gap-x-4 text-left" onClick={() => navigate(`/advertisements/add-details/${items?._id}`)}>
                               <div className="left-bus-image ">
                                 <img src={items?.bannerPhoto} className='w-10 h-10 rounded-full' alt="" />
                               </div>
                               <div className="right-business-name">
                                 <p className='text-sm'>{items?.firstName + " " + items?.lastName} </p>
                               </div>
-                            </div>
+                            </button>
                           </td>
                           <td>
                             <div className="business-number-sec">
@@ -148,10 +148,10 @@ const Advertisements = () => {
                           <td>
                             <div className="edit-delete-buttons flex items-center gap-x-5">
                               <div className="edit-btn">
-                                <button type="button" className=''><img src={EditIcon} className='w-5 h-5' alt="" /></button>
+                                <button type="button" className='' onClick={() => navigate(`/advertisements/add-details/${items?._id}`)}><img src={EditIcon} className='w-5 h-5' alt="" /></button>
                               </div>
                               <div className="delete-btn">
-                                <button type="button" className=''><img src={DeleteIcon} className='w-5 h-5' alt="" /></button>
+                                <button type="button" className='' onClick={() => navigate(`/advertisements/add-details/${items?._id}`)}><img src={DeleteIcon} className='w-5 h-5' alt="" /></button>
                               </div>
                             </div>
                           </td>
