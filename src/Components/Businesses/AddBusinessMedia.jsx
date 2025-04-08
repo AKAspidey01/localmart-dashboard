@@ -132,13 +132,21 @@ const AddBusinessMedis = () => {
 
 
   const handleBusniessMediaUpload = async () => {
-    console.log(userToken)
+
+    if (businessPhotos.length < 2) {
+      alert("Please upload a minimum of 2 photos.");
+      return;
+    }
+
     const formData = new FormData()
+
     formData.append("businessId" , receivedId);
-    businessPhotos.forEach((photos) => {
-      formData.append("files", photos);
-    });
-    console.log("formData" , formData)
+
+    if (businessPhotos.length > 0) {
+      businessPhotos.forEach((photo) => {
+        formData.append("files", photo);
+      });
+    }
     setModalIsOpen(true)
     try {
       await axios.post(`${config.api}admin/business/upload-business-media`, formData , {
@@ -147,7 +155,7 @@ const AddBusinessMedis = () => {
         },
       })
       .then((response) => {
-        console.log(response)
+        // console.log(response)
         if(response?.data?.status == 'success') {
             toast.success('Business Created Successfully');
             setModalIsOpen(false)
@@ -159,12 +167,11 @@ const AddBusinessMedis = () => {
 
       }).catch((err) => {
         console.log(err)
+        toast.error(err?.response?.data?.message || "An error occurred during upload")
         setModalIsOpen(false)
       })
-    //   console.log("Response:", response.data);
     } catch (error) {
       setModalIsOpen(false)
-      // console.error("Error:", error.response ? error.response.data : error.message);
     }
 
   }
@@ -202,7 +209,7 @@ const AddBusinessMedis = () => {
                                     })}
                                 </div>
                                 <div className="label-section mb-1">
-                                    <p className='text-BusinessFormLabel'>Business Photos and media*</p>
+                                    <p className='text-BusinessFormLabel'>Business Photos and media* (Upload Minimum 2 Photos)</p>
                                 </div>
                                 <div className="file-upload-outer-section-custom bg-ProfileScreensBg rounded-10p overflow-hidden relative h-[110px]">
                                     <input type="file" name="" id="" multiple onChange={(e) => handleFileChange(e)} className="h-full w-full opacity-0 relative z-10 cursor-pointer"/>
