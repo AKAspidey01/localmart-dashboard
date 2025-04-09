@@ -133,10 +133,10 @@ const AddBusinessMedis = () => {
 
   const handleBusniessMediaUpload = async () => {
 
-    if (businessPhotos.length < 2) {
-      alert("Please upload a minimum of 2 photos.");
-      return;
-    }
+    // if (businessPhotos.length < 2) {
+    //   alert("Please upload a minimum of 2 photos.");
+    //   return;
+    // }
 
     const formData = new FormData()
 
